@@ -5,7 +5,8 @@ import schema from './schema.graphql';
 import resolvers from './resolvers';
 import scopes from './scopes';
 import settings from '../../../../../settings';
-import User from './sql';
+// import User from './sql';
+import { User } from '../../database/models';
 import Feature from '../connector';
 import resources from './locales';
 

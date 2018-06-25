@@ -15,23 +15,17 @@
     "tests:watch": "cross-env NODE_ENV=test PORT=7070 spin test -t 10000 --full-trace --watch \"src/**/*.spec.js\"",
     "test": "yarn tests && yarn lint",
     "lint": "eslint --fix --ext js --ext jsx --ext json src config",
-    "seed": "yarn migrate && knex seed:run",
-    "migrate": "knex migrate:latest",
-    "rollback": "knex migrate:rollback",
+    "seed": "yarn migrate && sequelize db:seed:all",
+    "migrate": "sequelize db:migrate",
+    "rollback": "sequelize db:migrate:undo",
     "watch": "spin watch",
     "heroku-postbuild": "yarn build && yarn seed",
     "cli": "node ../../tools/cli",
     "stripe:setup": "node src/server/modules/subscription/cli/stripeSetup"
   },
   "lint-staged": {
-    "*.{js,jsx,json}": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.graphql": [
-      "prettier --parser graphql --write",
-      "git add"
-    ]
+    "*.{js,jsx,json}": ["eslint --fix", "git add"],
+    "*.graphql": ["prettier --parser graphql --write", "git add"]
   },
   "repository": {
     "type": "git",
@@ -41,14 +35,7 @@
     "url": "https://github.com/sysgears/apollo-universal-starter-kit/issues"
   },
   "homepage": "https://github.com/sysgears/apollo-universal-starter-kit",
-  "keywords": [
-    "apollo",
-    "universal",
-    "starter",
-    "graphql",
-    "react",
-    "redux"
-  ],
+  "keywords": ["apollo", "universal", "starter", "graphql", "react", "redux"],
   "author": "SysGears INC",
   "license": "MIT",
   "dependencies": {
