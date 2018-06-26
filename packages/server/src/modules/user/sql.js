@@ -430,7 +430,7 @@ class User {
   // }
 
   updateActive(id, isActive) {
-    return models.User.update({ is_active: isActive }, { id });
+    return models.User.update({ is_active: isActive }, { where: { id } });
   }
 
   // async getUserByEmail(email) {
@@ -554,46 +554,67 @@ class User {
   //   );
   // }
 
-  async getUserByGoogleIdOrEmail(id, email) {
+  // async getUserByGoogleIdOrEmail(id, email) {
+  //   return camelizeKeys(
+  //     models.User.findOne({
+  //       includes: [models.UserProfile, models.AuthGoogle],
+  //       where: {
+  //         [Op.or]: [{ google_id: id }, { email }]
+  //       }
+  //     })
+  //   );
+  // }
+
+  // async getUserByUsername(username) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select('u.id', 'u.username', 'u.role', 'u.is_active', 'u.email', 'up.first_name', 'up.last_name')
+  //       .from('user AS u')
+  //       .where('u.username', '=', username)
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .first()
+  //   );
+  // }
+
+  async getUserByUsername(username) {
     return camelizeKeys(
       models.User.findOne({
-        includes: [models.UserProfile, models.AuthGoogle],
-        where: {
-          [Op.or]: [{ google_id: id }, { email }]
-        }
+        attributes: ['id', 'username', 'role', 'is_active', 'email'],
+        inlcude: [{ model: models.UsesrProfile, attributes: ['first_name', 'last_name'], required: false }],
+        where: { username }
       })
     );
   }
 
-  async getUserByUsername(username) {
-    return camelizeKeys(
-      await knex
-        .select('u.id', 'u.username', 'u.role', 'u.is_active', 'u.email', 'up.first_name', 'up.last_name')
-        .from('user AS u')
-        .where('u.username', '=', username)
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .first()
-    );
-  }
-
+  // async getUserByUsernameOrEmail(usernameOrEmail) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.password_hash',
+  //         'u.role',
+  //         'u.is_active',
+  //         'u.email',
+  //         'up.first_name',
+  //         'up.last_name'
+  //       )
+  //       .from('user AS u')
+  //       .where('u.username', '=', usernameOrEmail)
+  //       .orWhere('u.email', '=', usernameOrEmail)
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .first()
+  //   );
+  // }
   async getUserByUsernameOrEmail(usernameOrEmail) {
     return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.password_hash',
-          'u.role',
-          'u.is_active',
-          'u.email',
-          'up.first_name',
-          'up.last_name'
-        )
-        .from('user AS u')
-        .where('u.username', '=', usernameOrEmail)
-        .orWhere('u.email', '=', usernameOrEmail)
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .first()
+      models.findOne({
+        attributes: ['id', 'username', 'password_hash', 'role', 'is_active', 'email'],
+        includes: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
+        where: {
+          [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+        }
+      })
     );
   }
 }
