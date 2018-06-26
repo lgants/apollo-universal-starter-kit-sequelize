@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   var Counter = sequelize.define(
     'Counter',
     {
-      amount: DataTypes.INTEGER
+      amount: { type: DataTypes.INTEGER, allowNull: false }
     },
     {}
   );

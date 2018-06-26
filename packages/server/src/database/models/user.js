@@ -3,11 +3,11 @@ module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define(
     'User',
     {
-      username: DataTypes.STRING,
-      email: DataTypes.STRING,
+      username: { type: DataTypes.STRING, unique: true },
+      email: { type: DataTypes.STRING, unique: true },
       password: DataTypes.STRING,
-      role: DataTypes.STRING,
-      is_active: DataTypes.BOOLEAN
+      role: { type: DataTypes.STRING, defaultValue: 'user' },
+      is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
     },
     {}
   );

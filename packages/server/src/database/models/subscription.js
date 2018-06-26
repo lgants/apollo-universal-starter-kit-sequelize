@@ -1,17 +1,28 @@
 'use strict';
+
+import Sequelize from 'sequelize';
+import models from './';
+
 module.exports = (sequelize, DataTypes) => {
   var Subscription = sequelize.define(
     'Subscription',
     {
-      stripe_customer_id: DataTypes.INTEGER,
-      stripe_source_id: DataTypes.INTEGER,
-      stripe_subscription_id: DataTypes.INTEGER,
-      active: DataTypes.BOOLEAN,
+      stripe_customer_id: { type: DataTypes.INTEGER, unique: true },
+      stripe_source_id: { type: DataTypes.INTEGER, unique: true },
+      stripe_subscription_id: { type: DataTypes.INTEGER, unique: true },
+      active: { type: DataTypes.BOOLEAN, default: true },
       expiry_month: DataTypes.INTEGER,
       expiry_year: DataTypes.INTEGER,
       last4: DataTypes.STRING,
       brand: DataTypes.STRING,
-      user_id: DataTypes.INTEGER
+      user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: models.User,
+          key: 'id',
+          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
+      }
     },
     {}
   );

@@ -1,10 +1,21 @@
 'use strict';
+
+import Sequelize from 'sequelize';
+import models from './';
+
 module.exports = (sequelize, DataTypes) => {
   var Comment = sequelize.define(
     'Comment',
     {
-      post_id: DataTypes.INTEGER,
-      content: DataTypes.STRING
+      content: DataTypes.STRING,
+      post_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: models.Post,
+          key: 'id',
+          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
+      }
     },
     {}
   );
