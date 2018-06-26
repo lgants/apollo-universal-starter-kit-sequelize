@@ -4,7 +4,8 @@ import FacebookStrategy from 'passport-facebook';
 
 import resolvers from './resolvers';
 import Feature from '../connector';
-import User from '../../sql';
+// import User from '../../sql';
+import { User } from '../../../../database/models';
 import settings from '../../../../../../../settings';
 import access from '../../access';
 import getCurrentUser from '../utils';

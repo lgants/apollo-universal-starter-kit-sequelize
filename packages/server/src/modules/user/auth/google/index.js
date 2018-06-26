@@ -4,7 +4,8 @@ import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
 import resolvers from './resolvers';
 import Feature from '../connector';
-import User from '../../sql';
+// import User from '../../sql';
+import { User } from '../../../../database/models';
 import access from '../../access';
 import settings from '../../../../../../../settings';
 import getCurrentUser from '../utils';

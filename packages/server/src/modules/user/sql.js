@@ -1,143 +1,247 @@
 // Helpers
-import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
-import { has } from 'lodash';
+// import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
+import { camelizeKeys } from 'humps';
+// import { has } from 'lodash';
 import bcrypt from 'bcryptjs';
-
+import models from '../../database/models';
 import knex from '../../sql/connector';
-import { returnId } from '../../sql/helpers';
+// import { returnId } from '../../sql/helpers';
+
+var Sequelize = require('sequelize');
+
+const Op = Sequelize.Op;
 
 // Actual query fetching and transformation in DB
 class User {
-  async getUsers(orderBy, filter) {
-    const queryBuilder = knex
-      .select(
-        'u.id as id',
-        'u.username',
-        'u.role',
-        'u.is_active',
-        'u.email',
-        'up.first_name',
-        'up.last_name',
-        'ca.serial',
-        'fa.fb_id',
-        'fa.display_name AS fbDisplayName',
-        'lna.ln_id',
-        'lna.display_name AS lnDisplayName',
-        'gha.gh_id',
-        'gha.display_name AS ghDisplayName',
-        'ga.google_id',
-        'ga.display_name AS googleDisplayName'
-      )
-      .from('user AS u')
-      .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-      .leftJoin('auth_certificate AS ca', 'ca.user_id', 'u.id')
-      .leftJoin('auth_facebook AS fa', 'fa.user_id', 'u.id')
-      .leftJoin('auth_google AS ga', 'ga.user_id', 'u.id')
-      .leftJoin('auth_github AS gha', 'gha.user_id', 'u.id')
-      .leftJoin('auth_linkedin AS lna', 'lna.user_id', 'u.id');
+  // async getUsers(orderBy, filter) {
+  //   const queryBuilder = knex
+  //     .select(
+  //       'u.id as id',
+  //       'u.username',
+  //       'u.role',
+  //       'u.is_active',
+  //       'u.email',
+  //       'up.first_name',
+  //       'up.last_name',
+  //       'ca.serial',
+  //       'fa.fb_id',
+  //       'fa.display_name AS fbDisplayName',
+  //       'lna.ln_id',
+  //       'lna.display_name AS lnDisplayName',
+  //       'gha.gh_id',
+  //       'gha.display_name AS ghDisplayName',
+  //       'ga.google_id',
+  //       'ga.display_name AS googleDisplayName'
+  //     )
+  //     .from('user AS u')
+  //     .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //     .leftJoin('auth_certificate AS ca', 'ca.user_id', 'u.id')
+  //     .leftJoin('auth_facebook AS fa', 'fa.user_id', 'u.id')
+  //     .leftJoin('auth_google AS ga', 'ga.user_id', 'u.id')
+  //     .leftJoin('auth_github AS gha', 'gha.user_id', 'u.id')
+  //     .leftJoin('auth_linkedin AS lna', 'lna.user_id', 'u.id');
+  //
+  //   // add order by
+  //   if (orderBy && orderBy.column) {
+  //     let column = orderBy.column;
+  //     let order = 'asc';
+  //     if (orderBy.order) {
+  //       order = orderBy.order;
+  //     }
+  //
+  //     queryBuilder.orderBy(decamelize(column), order);
+  //   }
+  //
+  //   // add filter conditions
+  //   if (filter) {
+  //     if (has(filter, 'role') && filter.role !== '') {
+  //       queryBuilder.where(function() {
+  //         this.where('u.role', filter.role);
+  //       });
+  //     }
+  //
+  //     if (has(filter, 'isActive') && filter.isActive !== null) {
+  //       queryBuilder.where(function() {
+  //         this.where('u.is_active', filter.isActive);
+  //       });
+  //     }
+  //
+  //     if (has(filter, 'searchText') && filter.searchText !== '') {
+  //       queryBuilder.where(function() {
+  //         this.where('u.username', 'like', `%${filter.searchText}%`)
+  //           .orWhere('u.email', 'like', `%${filter.searchText}%`)
+  //           .orWhere('up.first_name', 'like', `%${filter.searchText}%`)
+  //           .orWhere('up.last_name', 'like', `%${filter.searchText}%`);
+  //       });
+  //     }
+  //   }
+  //
+  //   return camelizeKeys(await queryBuilder);
+  // }
+
+  async getUsers() {
+    // async getUsers(orderBy, filter) {
+    const queryBuilder = models.User.findAll({
+      include: [
+        { model: models.UserProfile },
+        { model: models.AuthCertificate },
+        { model: models.AuthFacebook },
+        { model: models.AuthGoogle }
+      ]
+    });
 
     // add order by
-    if (orderBy && orderBy.column) {
-      let column = orderBy.column;
-      let order = 'asc';
-      if (orderBy.order) {
-        order = orderBy.order;
-      }
-
-      queryBuilder.orderBy(decamelize(column), order);
-    }
-
-    // add filter conditions
-    if (filter) {
-      if (has(filter, 'role') && filter.role !== '') {
-        queryBuilder.where(function() {
-          this.where('u.role', filter.role);
-        });
-      }
-
-      if (has(filter, 'isActive') && filter.isActive !== null) {
-        queryBuilder.where(function() {
-          this.where('u.is_active', filter.isActive);
-        });
-      }
-
-      if (has(filter, 'searchText') && filter.searchText !== '') {
-        queryBuilder.where(function() {
-          this.where('u.username', 'like', `%${filter.searchText}%`)
-            .orWhere('u.email', 'like', `%${filter.searchText}%`)
-            .orWhere('up.first_name', 'like', `%${filter.searchText}%`)
-            .orWhere('up.last_name', 'like', `%${filter.searchText}%`);
-        });
-      }
-    }
-
-    return camelizeKeys(await queryBuilder);
+    // if (orderBy && orderBy.column) {
+    //   let column = orderBy.column;
+    //   let order = 'asc';
+    //   if (orderBy.order) {
+    //     order = orderBy.order;
+    //   }
+    //
+    //   queryBuilder.orderBy(decamelize(column), order);
+    // }
+    //
+    // // add filter conditions
+    // if (filter) {
+    //   if (has(filter, 'role') && filter.role !== '') {
+    //     queryBuilder.where(function() {
+    //       this.where('u.role', filter.role);
+    //     });
+    //   }
+    //
+    //   if (has(filter, 'isActive') && filter.isActive !== null) {
+    //     queryBuilder.where(function() {
+    //       this.where('u.is_active', filter.isActive);
+    //     });
+    //   }
+    //
+    //   if (has(filter, 'searchText') && filter.searchText !== '') {
+    //     queryBuilder.where(function() {
+    //       this.where('u.username', 'like', `%${filter.searchText}%`)
+    //         .orWhere('u.email', 'like', `%${filter.searchText}%`)
+    //         .orWhere('up.first_name', 'like', `%${filter.searchText}%`)
+    //         .orWhere('up.last_name', 'like', `%${filter.searchText}%`);
+    //     });
+    //   }
+    // }
+    //
+    // return camelizeKeys(await queryBuilder);
+    return queryBuilder;
   }
+
+  // async getUser(id) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.role',
+  //         'u.is_active',
+  //         'u.email',
+  //         'up.first_name',
+  //         'up.last_name',
+  //         'ca.serial',
+  //         'fa.fb_id',
+  //         'fa.display_name AS fbDisplayName',
+  //         'lna.ln_id',
+  //         'lna.display_name AS lnDisplayName',
+  //         'gha.gh_id',
+  //         'gha.display_name AS ghDisplayName',
+  //         'ga.google_id',
+  //         'ga.display_name AS googleDisplayName'
+  //       )
+  //       .from('user AS u')
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .leftJoin('auth_certificate AS ca', 'ca.user_id', 'u.id')
+  //       .leftJoin('auth_facebook AS fa', 'fa.user_id', 'u.id')
+  //       .leftJoin('auth_google AS ga', 'ga.user_id', 'u.id')
+  //       .leftJoin('auth_github AS gha', 'gha.user_id', 'u.id')
+  //       .leftJoin('auth_linkedin AS lna', 'lna.user_id', 'u.id')
+  //       .where('u.id', '=', id)
+  //       .first()
+  //   );
+  // }
 
   async getUser(id) {
-    return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.role',
-          'u.is_active',
-          'u.email',
-          'up.first_name',
-          'up.last_name',
-          'ca.serial',
-          'fa.fb_id',
-          'fa.display_name AS fbDisplayName',
-          'lna.ln_id',
-          'lna.display_name AS lnDisplayName',
-          'gha.gh_id',
-          'gha.display_name AS ghDisplayName',
-          'ga.google_id',
-          'ga.display_name AS googleDisplayName'
-        )
-        .from('user AS u')
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .leftJoin('auth_certificate AS ca', 'ca.user_id', 'u.id')
-        .leftJoin('auth_facebook AS fa', 'fa.user_id', 'u.id')
-        .leftJoin('auth_google AS ga', 'ga.user_id', 'u.id')
-        .leftJoin('auth_github AS gha', 'gha.user_id', 'u.id')
-        .leftJoin('auth_linkedin AS lna', 'lna.user_id', 'u.id')
-        .where('u.id', '=', id)
-        .first()
-    );
+    const queryBuilder = models.User.findOne({
+      where: { id: id },
+      include: [
+        { model: models.UserProfile },
+        { model: models.AuthCertificate },
+        { model: models.AuthFacebook },
+        { model: models.AuthGoogle }
+      ]
+    });
+
+    return queryBuilder;
   }
+
+  // async getUserWithPassword(id) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.password_hash',
+  //         'u.role',
+  //         'u.is_active',
+  //         'u.email',
+  //         'up.first_name',
+  //         'up.last_name'
+  //       )
+  //       .from('user AS u')
+  //       .where('u.id', '=', id)
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .first()
+  //   );
+  // }
 
   async getUserWithPassword(id) {
-    return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.password_hash',
-          'u.role',
-          'u.is_active',
-          'u.email',
-          'up.first_name',
-          'up.last_name'
-        )
-        .from('user AS u')
-        .where('u.id', '=', id)
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .first()
-    );
+    const queryBuilder = models.User.findOne({
+      where: { id: id },
+      include: [{ model: models.UserProfile }]
+    });
+
+    return queryBuilder;
   }
 
+  // async getUserWithSerial(serial) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select('u.id', 'u.username', 'u.role', 'u.is_active', 'ca.serial', 'up.first_name', 'up.last_name')
+  //       .from('user AS u')
+  //       .leftJoin('auth_certificate AS ca', 'ca.user_id', 'u.id')
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .where('ca.serial', '=', serial)
+  //       .first()
+  //   );
+  // }
+
   async getUserWithSerial(serial) {
-    return camelizeKeys(
-      await knex
-        .select('u.id', 'u.username', 'u.role', 'u.is_active', 'ca.serial', 'up.first_name', 'up.last_name')
-        .from('user AS u')
-        .leftJoin('auth_certificate AS ca', 'ca.user_id', 'u.id')
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .where('ca.serial', '=', serial)
-        .first()
-    );
+    const queryBuilder = models.User.findOne({
+      include: [
+        { model: models.UserProfile },
+        {
+          model: models.AuthCertificate,
+          where: {
+            serial
+          }
+        }
+      ]
+    });
+
+    return queryBuilder;
   }
+
+  // async register({ username, email, password, role, isActive }) {
+  //   const passwordHash = await bcrypt.hash(password, 12);
+  //
+  //   if (role === undefined) {
+  //     role = 'user';
+  //   }
+  //
+  //   return returnId(knex('user')).insert({ username, email, role, password_hash: passwordHash, is_active: !!isActive });
+  // }
 
   async register({ username, email, password, role, isActive }) {
     const passwordHash = await bcrypt.hash(password, 12);
@@ -146,24 +250,65 @@ class User {
       role = 'user';
     }
 
-    return returnId(knex('user')).insert({ username, email, role, password_hash: passwordHash, is_active: !!isActive });
+    return models.User.create({
+      username,
+      email,
+      role,
+      password_hash: passwordHash,
+      is_active: !!isActive
+    });
+
+    // return returnId(knex('user')).insert({ username, email, role, password_hash: passwordHash, is_active: !!isActive });
   }
+
+  // createFacebookAuth({ id, displayName, userId }) {
+  //   return returnId(knex('auth_facebook')).insert({ fb_id: id, display_name: displayName, user_id: userId });
+  // }
 
   createFacebookAuth({ id, displayName, userId }) {
-    return returnId(knex('auth_facebook')).insert({ fb_id: id, display_name: displayName, user_id: userId });
+    return models.AuthFacebook.create({
+      fb_id: id,
+      display_name: displayName,
+      user_id: userId
+    });
   }
 
-  createGithubAuth({ id, displayName, userId }) {
-    return returnId(knex('auth_github')).insert({ gh_id: id, display_name: displayName, user_id: userId });
-  }
+  // createGithubAuth({ id, displayName, userId }) {
+  //   return returnId(knex('auth_github')).insert({ gh_id: id, display_name: displayName, user_id: userId });
+  // }
+
+  // createGoogleOAuth({ id, displayName, userId }) {
+  //   return returnId(knex('auth_google')).insert({ google_id: id, display_name: displayName, user_id: userId });
+  // }
 
   createGoogleOAuth({ id, displayName, userId }) {
-    return returnId(knex('auth_google')).insert({ google_id: id, display_name: displayName, user_id: userId });
+    return models.AuthGoogle.create({
+      google_id: id,
+      display_name: displayName,
+      user_id: userId
+    });
   }
 
-  createLinkedInAuth({ id, displayName, userId }) {
-    return returnId(knex('auth_linkedin')).insert({ ln_id: id, display_name: displayName, user_id: userId });
-  }
+  // createLinkedInAuth({ id, displayName, userId }) {
+  //   return returnId(knex('auth_linkedin')).insert({ ln_id: id, display_name: displayName, user_id: userId });
+  // }
+
+  // async editUser({ id, username, email, role, isActive, password }) {
+  //   let localAuthInput = { email };
+  //   if (password) {
+  //     const passwordHash = await bcrypt.hash(password, 12);
+  //     localAuthInput = { email, password_hash: passwordHash };
+  //   }
+  //
+  //   return knex('user')
+  //     .update({
+  //       username,
+  //       role,
+  //       is_active: isActive,
+  //       ...localAuthInput
+  //     })
+  //     .where({ id });
+  // }
 
   async editUser({ id, username, email, role, isActive, password }) {
     let localAuthInput = { email };
@@ -172,31 +317,67 @@ class User {
       localAuthInput = { email, password_hash: passwordHash };
     }
 
-    return knex('user')
-      .update({
+    return models.User.update(
+      {
         username,
         role,
         is_active: isActive,
         ...localAuthInput
-      })
-      .where({ id });
+      },
+      { where: { id } }
+    );
   }
 
-  async editUserProfile({ id, profile }) {
-    const userProfile = await knex
-      .select('id')
-      .from('user_profile')
-      .where({ user_id: id })
-      .first();
+  // async editUserProfile({ id, profile }) {
+  //   const userProfile = await knex
+  //     .select('id')
+  //     .from('user_profile')
+  //     .where({ user_id: id })
+  //     .first();
+  //
+  //   if (userProfile) {
+  //     return knex('user_profile')
+  //       .update(decamelizeKeys(profile))
+  //       .where({ user_id: id });
+  //   } else {
+  //     return returnId(knex('user_profile')).insert({ ...decamelizeKeys(profile), user_id: id });
+  //   }
+  // }
+
+  async editUserProfile({ id }) {
+    // async editUserProfile({ id, profile }) {
+    const userProfile = models.UserProfile.findOne({ attributes: ['id'], where: { user_id: id } });
 
     if (userProfile) {
-      return knex('user_profile')
-        .update(decamelizeKeys(profile))
-        .where({ user_id: id });
+      return models.UserProfile.update({
+        where: { user_id: id }
+      });
     } else {
-      return returnId(knex('user_profile')).insert({ ...decamelizeKeys(profile), user_id: id });
+      // return returnId(knex('user_profile')).insert({ ...decamelizeKeys(profile), user_id: id });
+      return userProfile;
     }
   }
+
+  // async editAuthCertificate({
+  //   id,
+  //   auth: {
+  //     certificate: { serial }
+  //   }
+  // }) {
+  //   const userProfile = await knex
+  //     .select('id')
+  //     .from('auth_certificate')
+  //     .where({ user_id: id })
+  //     .first();
+  //
+  //   if (userProfile) {
+  //     return knex('auth_certificate')
+  //       .update({ serial })
+  //       .where({ user_id: id });
+  //   } else {
+  //     return returnId(knex('auth_certificate')).insert({ serial, user_id: id });
+  //   }
+  // }
 
   async editAuthCertificate({
     id,
@@ -204,58 +385,80 @@ class User {
       certificate: { serial }
     }
   }) {
-    const userProfile = await knex
-      .select('id')
-      .from('auth_certificate')
-      .where({ user_id: id })
-      .first();
+    const userProfile = models.AuthCertificate.findOne({
+      where: { user_id: id }
+    });
 
     if (userProfile) {
-      return knex('auth_certificate')
-        .update({ serial })
-        .where({ user_id: id });
+      return models.AuthCertificate.update({ serial }, { where: { user_id: id } });
     } else {
-      return returnId(knex('auth_certificate')).insert({ serial, user_id: id });
+      // return returnId(knex('auth_certificate')).insert({ serial, user_id: id });
+      return null;
     }
   }
 
+  // deleteUser(id) {
+  //   return knex('user')
+  //     .where('id', '=', id)
+  //     .del();
+  // }
+
   deleteUser(id) {
-    return knex('user')
-      .where('id', '=', id)
-      .del();
+    return models.User.destroy({
+      where: { id }
+    });
   }
+
+  // async updatePassword(id, newPassword) {
+  //   const passwordHash = await bcrypt.hash(newPassword, 12);
+  //
+  //   return knex('user')
+  //     .update({ password_hash: passwordHash })
+  //     .where({ id });
+  // }
 
   async updatePassword(id, newPassword) {
     const passwordHash = await bcrypt.hash(newPassword, 12);
 
-    return knex('user')
-      .update({ password_hash: passwordHash })
-      .where({ id });
+    return models.User.update({ password_hash: passwordHash }, { where: { id } });
   }
 
+  // updateActive(id, isActive) {
+  //   return knex('user')
+  //     .update({ is_active: isActive })
+  //     .where({ id });
+  // }
+
   updateActive(id, isActive) {
-    return knex('user')
-      .update({ is_active: isActive })
-      .where({ id });
+    return models.User.update({ is_active: isActive }, { id });
   }
+
+  // async getUserByEmail(email) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.password_hash',
+  //         'u.role',
+  //         'u.is_active',
+  //         'u.email',
+  //         'up.first_name',
+  //         'up.last_name'
+  //       )
+  //       .from('user AS u')
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .where({ email })
+  //       .first()
+  //   );
+  // }
 
   async getUserByEmail(email) {
     return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.password_hash',
-          'u.role',
-          'u.is_active',
-          'u.email',
-          'up.first_name',
-          'up.last_name'
-        )
-        .from('user AS u')
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .where({ email })
-        .first()
+      await models.User.findOne({
+        where: { email },
+        include: [models.UserProfile]
+      })
     );
   }
 
@@ -282,72 +485,83 @@ class User {
     );
   }
 
-  async getUserByLnInIdOrEmail(id, email) {
-    return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.role',
-          'u.is_active',
-          'lna.ln_id',
-          'u.email',
-          'u.password_hash',
-          'up.first_name',
-          'up.last_name'
-        )
-        .from('user AS u')
-        .leftJoin('auth_linkedin AS lna', 'lna.user_id', 'u.id')
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .where('lna.ln_id', '=', id)
-        .orWhere('u.email', '=', email)
-        .first()
-    );
-  }
+  // async getUserByLnInIdOrEmail(id, email) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.role',
+  //         'u.is_active',
+  //         'lna.ln_id',
+  //         'u.email',
+  //         'u.password_hash',
+  //         'up.first_name',
+  //         'up.last_name'
+  //       )
+  //       .from('user AS u')
+  //       .leftJoin('auth_linkedin AS lna', 'lna.user_id', 'u.id')
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .where('lna.ln_id', '=', id)
+  //       .orWhere('u.email', '=', email)
+  //       .first()
+  //   );
+  // }
 
-  async getUserByGHIdOrEmail(id, email) {
-    return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.role',
-          'u.is_active',
-          'gha.gh_id',
-          'u.email',
-          'u.password_hash',
-          'up.first_name',
-          'up.last_name'
-        )
-        .from('user AS u')
-        .leftJoin('auth_github AS gha', 'gha.user_id', 'u.id')
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .where('gha.gh_id', '=', id)
-        .orWhere('u.email', '=', email)
-        .first()
-    );
-  }
+  // async getUserByGHIdOrEmail(id, email) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.role',
+  //         'u.is_active',
+  //         'gha.gh_id',
+  //         'u.email',
+  //         'u.password_hash',
+  //         'up.first_name',
+  //         'up.last_name'
+  //       )
+  //       .from('user AS u')
+  //       .leftJoin('auth_github AS gha', 'gha.user_id', 'u.id')
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .where('gha.gh_id', '=', id)
+  //       .orWhere('u.email', '=', email)
+  //       .first()
+  //   );
+  // }
+
+  // async getUserByGoogleIdOrEmail(id, email) {
+  //   return camelizeKeys(
+  //     await knex
+  //       .select(
+  //         'u.id',
+  //         'u.username',
+  //         'u.role',
+  //         'u.is_active',
+  //         'ga.google_id',
+  //         'u.email',
+  //         'u.password_hash',
+  //         'up.first_name',
+  //         'up.last_name'
+  //       )
+  //       .from('user AS u')
+  //       .leftJoin('auth_google AS ga', 'ga.user_id', 'u.id')
+  //       .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
+  //       .where('ga.google_id', '=', id)
+  //       .orWhere('u.email', '=', email)
+  //       .first()
+  //   );
+  // }
 
   async getUserByGoogleIdOrEmail(id, email) {
     return camelizeKeys(
-      await knex
-        .select(
-          'u.id',
-          'u.username',
-          'u.role',
-          'u.is_active',
-          'ga.google_id',
-          'u.email',
-          'u.password_hash',
-          'up.first_name',
-          'up.last_name'
-        )
-        .from('user AS u')
-        .leftJoin('auth_google AS ga', 'ga.user_id', 'u.id')
-        .leftJoin('user_profile AS up', 'up.user_id', 'u.id')
-        .where('ga.google_id', '=', id)
-        .orWhere('u.email', '=', email)
-        .first()
+      models.User.findOne({
+        includes: [models.UserProfile, models.AuthGoogle],
+        where: {
+          [Op.or]: [{ google_id: id }, { email }]
+        }
+      })
     );
   }
 
