@@ -6,10 +6,11 @@ var Sequelize = require('sequelize');
 
 var basename = path.basename(__filename);
 var env = process.env.NODE_ENV || 'development';
+// var config = require(__dirname + '/../../config/config.js')[env];
 var config = require('../config/config.js')[env];
 
 var db = {};
-var sequelize;
+let sequelize;
 
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -32,6 +33,15 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.log('Unable to connect to the database:', err);
+  });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
