@@ -1,5 +1,5 @@
 let DB_TYPE = process.env.NODE_ENV === 'test' || !process.env.DB_TYPE ? 'sqlite' : process.env.DB_TYPE;
-let client = '';
+let dialect = '';
 let connectionDevelopment = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -14,18 +14,18 @@ let connectionProduction = connectionDevelopment;
 let pool = {};
 if (DB_TYPE === 'mysql') {
   // mysql
-  client = 'mysql2';
-} else if (DB_TYPE === 'pg') {
+  dialect = 'mysql';
+} else if (DB_TYPE === 'postgres') {
   // postgres
-  client = 'pg';
+  dialect = 'postgres';
 } else {
   // sqlite
-  client = 'sqlite3';
+  dialect = 'sqlite';
   connectionDevelopment = {
-    filename: './dev-db.sqlite3'
+    filename: './dev-db.sqlite'
   };
   connectionProduction = {
-    filename: './prod-db.sqlite3'
+    filename: './prod-db.sqlite'
   };
   pool = {
     afterCreate: (conn, cb) => {
@@ -34,9 +34,9 @@ if (DB_TYPE === 'mysql') {
   };
 }
 
-export default {
+module.exports = {
   dbType: DB_TYPE,
-  client: client,
+  dialect: dialect,
   connection: {
     development: connectionDevelopment,
     production: connectionProduction

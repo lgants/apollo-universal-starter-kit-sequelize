@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   web: {
     itemsNumber: 10,
     type: 'relay' // 'standard' or 'relay'

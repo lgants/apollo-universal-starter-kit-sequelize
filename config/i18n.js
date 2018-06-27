@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   enabled: true,
   langPickerRender: true,
   langList: ['en-US', 'ru-RU'],

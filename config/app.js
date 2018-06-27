@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   name: 'Apollo Starter Kit',
   logging: {
     debugSQL: false,

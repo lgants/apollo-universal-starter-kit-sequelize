@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   ga: {
     trackingId: 'UA-000000-01'
   },
