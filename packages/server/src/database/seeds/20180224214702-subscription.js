@@ -14,9 +14,7 @@ module.exports = {
           expiry_year: 2022,
           last4: '1111',
           brand: 'Visa',
-          user_id: 1,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          user_id: 1
         }
       ],
       {}

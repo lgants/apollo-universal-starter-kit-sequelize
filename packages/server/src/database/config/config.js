@@ -1,4 +1,5 @@
-import settings from '../../../../settings';
+var settings = require('../../../../../settings');
+// ver fs = require('fs');
 
 module.exports = {
   development: {

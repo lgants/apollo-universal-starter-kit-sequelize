@@ -6,8 +6,8 @@ var Sequelize = require('sequelize');
 
 var basename = path.basename(__filename);
 var env = process.env.NODE_ENV || 'development';
-// eslint-disable-next-line
-var config = require(__dirname + '/../config.js')[env];
+var config = require('../config/config.js')[env];
+
 var db = {};
 var sequelize;
 

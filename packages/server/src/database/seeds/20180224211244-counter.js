@@ -8,9 +8,7 @@ module.exports = {
       'Counter',
       [
         {
-          amount: initialAmount,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          amount: initialAmount
         }
       ],
       {}

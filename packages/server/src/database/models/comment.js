@@ -1,7 +1,7 @@
 'use strict';
 
-import Sequelize from 'sequelize';
-import models from './';
+var Sequelize = require('sequelize');
+var models = require('./');
 
 module.exports = (sequelize, DataTypes) => {
   var Comment = sequelize.define(

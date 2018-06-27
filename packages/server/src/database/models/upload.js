@@ -3,10 +3,10 @@ module.exports = (sequelize, DataTypes) => {
   var Upload = sequelize.define(
     'Upload',
     {
-      name: DataTypes.STRING,
-      type: DataTypes.STRING,
-      size: DataTypes.INTEGER,
-      path: DataTypes.STRING
+      name: { type: DataTypes.STRING, allowNull: false },
+      type: { type: DataTypes.STRING, allowNull: false },
+      size: { type: DataTypes.STRING, allowNull: false },
+      path: { type: DataTypes.STRING, allowNull: false }
     },
     {}
   );

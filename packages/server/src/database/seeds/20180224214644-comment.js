@@ -6,9 +6,7 @@ module.exports = {
       'Comment',
       [...Array(20).keys()].map(ii => ({
         post_id: 1,
-        content: `Comment title ${ii + 1} for post ${ii}`,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        content: `Comment title ${ii + 1} for post ${ii}`
       })),
       {}
     );
