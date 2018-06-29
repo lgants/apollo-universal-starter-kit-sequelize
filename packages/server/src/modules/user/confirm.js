@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
 // import User from './sql';
-import { User } from '../../database/models';
+// import { User } from '../../database/models';
+import db from '../../database/models';
 
 import settings from '../../../../../settings';
+
+const User = db.User;
 
 export default async (req, res) => {
   try {

@@ -1,9 +1,9 @@
 'use strict';
 
-var Sequelize = require('sequelize');
-var models = require('./');
+import Sequelize from 'sequelize';
+import models from './';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   var UserProfile = sequelize.define(
     'UserProfile',
     {

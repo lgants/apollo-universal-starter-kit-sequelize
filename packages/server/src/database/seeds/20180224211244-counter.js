@@ -3,7 +3,7 @@
 const initialAmount = 5;
 // (queryInterface, Sequelize)
 
-module.exports = {
+export default {
   up: queryInterface => {
     return queryInterface.bulkInsert(
       'Counter',

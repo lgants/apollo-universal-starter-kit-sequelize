@@ -1,11 +1,9 @@
-module.exports = {
-  app: require('./app'),
-  db: require('./db'),
-  engine: require('./engine'),
-  user: require('./user'),
-  mailer: require('./mailer'),
-  analytics: require('./analytics'),
-  subscription: require('./subscription'),
-  i18n: require('./i18n'),
-  pagination: require('./pagination')
-};
+export { default as app } from './app';
+export { default as db } from './db';
+export { default as engine } from './engine';
+export { default as user } from './user';
+export { default as mailer } from './mailer';
+export { default as analytics } from './analytics';
+export { default as subscription } from './subscription';
+export { default as i18n } from './i18n';
+export { default as pagination } from './pagination';

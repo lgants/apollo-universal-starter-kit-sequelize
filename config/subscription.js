@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   enabled: false,
   stripePublishableKey: '',
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,

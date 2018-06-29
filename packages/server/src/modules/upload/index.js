@@ -1,7 +1,7 @@
 import { apolloUploadExpress } from 'apollo-upload-server';
 import express from 'express';
-// import Upload from './sql';
-import { Upload } from '../../database/models';
+import Upload from './sql';
+// import { Upload } from '../../database/models';
 
 import schema from './schema.graphql';
 import createResolvers from './resolvers';

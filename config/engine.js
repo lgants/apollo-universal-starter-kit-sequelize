@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   engineConfig: {
     apiKey: '', // Set your Engine API key here
     logging: {

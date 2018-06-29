@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   var Counter = sequelize.define('Counter', {
     amount: { type: DataTypes.INTEGER }
   });

@@ -34,7 +34,7 @@ if (DB_TYPE === 'mysql') {
   };
 }
 
-module.exports = {
+export default {
   dbType: DB_TYPE,
   dialect: dialect,
   connection: {

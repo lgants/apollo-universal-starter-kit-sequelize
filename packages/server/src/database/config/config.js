@@ -1,7 +1,7 @@
-var settings = require('../../../../../settings');
+import settings from '../../../../../settings';
 // ver fs = require('fs');
 
-module.exports = {
+export default {
   development: {
     username: 'root',
     password: null,
