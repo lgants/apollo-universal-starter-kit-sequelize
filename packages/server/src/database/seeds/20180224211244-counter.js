@@ -1,6 +1,7 @@
 'use strict';
 
 const initialAmount = 5;
+// (queryInterface, Sequelize)
 
 module.exports = {
   up: queryInterface => {
