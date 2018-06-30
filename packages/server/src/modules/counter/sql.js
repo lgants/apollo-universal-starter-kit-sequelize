@@ -6,14 +6,13 @@ export default class Counter {
   //   return knex('counter').first();
   // }
   counterQuery() {
-    // console.log('models', models.counter);
-    return models.counter.findAll({ limit: 1 });
+    return models.Counter.findAll({ limit: 1 });
   }
 
   // addCounter(amount) {
   //   return knex('counter').increment('amount', amount);
   // }
   addCounter(amount) {
-    return models.counter.increment('amount', { where: { amount } });
+    return models.Counter.increment('amount', { where: { amount } });
   }
 }

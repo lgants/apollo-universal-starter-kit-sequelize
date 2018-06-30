@@ -9,7 +9,7 @@ import path from 'path';
 import Sequelize from 'sequelize';
 
 import configjs from '../config/config';
-import counter from './counter';
+// import counter from './counter';
 
 // var config = require('../config/config.js')[env];
 
@@ -60,8 +60,12 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 // db.user = user;
 
+var model = sequelize['import']('../../server/src/database/models/counter');
+db[model.name] = model;
+db['Counter'].associate(db);
+
 // db.counter = counter();
 // db.counter.associate(db);
-console.log('counter', counter);
+// console.log('counter', counter);
 
 export default db;
