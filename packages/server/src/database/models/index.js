@@ -9,6 +9,8 @@ import path from 'path';
 import Sequelize from 'sequelize';
 
 import configjs from '../config/config';
+import counter from './counter';
+
 // var config = require('../config/config.js')[env];
 
 var basename = path.basename(__filename);
@@ -24,6 +26,8 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+// console.log('__dirname', path.join(__dirname, './'));
+// console.log(fs.readdirSync(__dirname));
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -40,7 +44,24 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.log('Unable to connect to the database:', err);
+  });
+
+// console.log(__dirname + '/user.js');
+// db.user = sequelize.import('./user.js');
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+// db.user = user;
+
+// db.counter = counter();
+// db.counter.associate(db);
+console.log('counter', counter);
 
 export default db;
