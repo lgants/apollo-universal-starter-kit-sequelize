@@ -30,7 +30,7 @@ export default class Post {
   //   return orderedFor(res, postIds, 'postId', false);
   // }
   async getCommentsForPostIds(postIds) {
-    models.Post.findAll({
+    return models.Post.findAll({
       attributes: ['id', 'content', 'post_id AS postId'],
       where: {
         post_id: {
@@ -60,7 +60,7 @@ export default class Post {
     return models.Post.findOne({
       attributes: ['id', 'title', 'content'],
       where: {
-        id: id
+        id
       }
     });
   }

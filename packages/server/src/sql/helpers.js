@@ -5,19 +5,25 @@ import settings from '../../../../settings';
 
 export const returnId = sequelizeTable => (settings.db.dbType === 'sqlite' ? sequelizeTable : sequelizeTable.id);
 
-export const truncateTables = async (knex, Promise, tables) => {
-  if (settings.db.dbType === 'sqlite') {
-    return Promise.all(tables.map(table => knex(table).truncate()));
-  } else if (settings.db.dbType === 'mysql') {
-    return knex.transaction(async function(trx) {
-      await knex.raw('SET FOREIGN_KEY_CHECKS=0').transacting(trx);
-      await Promise.all(tables.map(table => knex.raw(`TRUNCATE TABLE ${table}`).transacting(trx)));
-      await trx.commit;
-      await knex.raw('SET FOREIGN_KEY_CHECKS=1').transacting(trx);
-    });
-  } else if (settings.db.dbType === 'pg') {
-    return Promise.all(tables.map(table => knex.raw(`TRUNCATE "${table}" RESTART IDENTITY CASCADE`)));
-  }
+// export const truncateTables = async (knex, Promise, tables) => {
+//   if (settings.db.dbType === 'sqlite') {
+//     return Promise.all(tables.map(table => knex(table).truncate()));
+//   } else if (settings.db.dbType === 'mysql') {
+//     return knex.transaction(async function(trx) {
+//       await knex.raw('SET FOREIGN_KEY_CHECKS=0').transacting(trx);
+//       await Promise.all(tables.map(table => knex.raw(`TRUNCATE TABLE ${table}`).transacting(trx)));
+//       await trx.commit;
+//       await knex.raw('SET FOREIGN_KEY_CHECKS=1').transacting(trx);
+//     });
+//   } else if (settings.db.dbType === 'pg') {
+//     return Promise.all(tables.map(table => knex.raw(`TRUNCATE "${table}" RESTART IDENTITY CASCADE`)));
+//   }
+// };
+
+export const truncateTables = async sequelize => {
+  Object.values(sequelize.models).map(model => {
+    return model.destroy({ truncate: true });
+  });
 };
 
 export const orderedFor = (rows, collection, field, singleObject) => {
