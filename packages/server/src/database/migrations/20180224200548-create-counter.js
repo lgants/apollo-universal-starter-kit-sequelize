@@ -10,7 +10,9 @@ export async function up(queryInterface, Sequelize) {
     },
     amount: {
       type: Sequelize.INTEGER
-    }
+    },
+    createdAt: Sequelize.DATE,
+    updatedAt: Sequelize.DATE
   });
 }
 

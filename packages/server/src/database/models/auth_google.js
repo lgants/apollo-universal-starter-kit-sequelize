@@ -18,7 +18,7 @@ export default async function(sequelize, DataTypes) {
         }
       }
     },
-    { timestamps: true }
+    { timestamps: true, freezeTableName: true }
   );
   AuthGoogle.associate = function() {
     // associations can be defined here

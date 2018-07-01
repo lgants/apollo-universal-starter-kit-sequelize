@@ -22,7 +22,9 @@ export async function up(queryInterface, Sequelize) {
       },
       onUpdate: 'cascade',
       onDelete: 'cascade'
-    }
+    },
+    createdAt: Sequelize.DATE,
+    updatedAt: Sequelize.DATE
   });
 }
 

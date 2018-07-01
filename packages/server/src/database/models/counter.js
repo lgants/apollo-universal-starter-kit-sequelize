@@ -6,7 +6,7 @@ export default function(sequelize, DataTypes) {
     {
       amount: DataTypes.INTEGER
     },
-    { timestamps: true }
+    { timestamps: true, freezeTableName: true }
   );
   Counter.associate = function() {
     // associations can be defined here

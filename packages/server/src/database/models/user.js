@@ -10,7 +10,7 @@ export default async function(sequelize, DataTypes) {
       role: { type: DataTypes.STRING, defaultValue: 'user' },
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
     },
-    { timestamps: true }
+    { timestamps: true, freezeTableName: true }
   );
   User.associate = function() {
     // associations can be defined here

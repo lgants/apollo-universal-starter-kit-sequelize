@@ -17,7 +17,7 @@ export default async function(sequelize, DataTypes) {
         }
       }
     },
-    { timestamps: true }
+    { timestamps: true, freezeTableName: true }
   );
   Comment.associate = function() {
     // associations can be defined here

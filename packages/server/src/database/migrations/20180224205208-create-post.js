@@ -13,7 +13,9 @@ export async function up(queryInterface, Sequelize) {
     },
     content: {
       type: Sequelize.STRING
-    }
+    },
+    createdAt: Sequelize.DATE,
+    updatedAt: Sequelize.DATE
   });
 }
 

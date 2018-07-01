@@ -25,7 +25,9 @@ export async function up(queryInterface, Sequelize) {
     is_active: {
       type: Sequelize.BOOLEAN,
       defaultValue: false
-    }
+    },
+    createdAt: Sequelize.DATE,
+    updatedAt: Sequelize.DATE
   });
 }
 

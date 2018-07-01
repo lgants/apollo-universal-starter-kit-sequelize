@@ -23,7 +23,9 @@ export async function up(queryInterface, Sequelize) {
     path: {
       type: Sequelize.STRING,
       notNull: true
-    }
+    },
+    createdAt: Sequelize.DATE,
+    updatedAt: Sequelize.DATE
   });
 }
 
