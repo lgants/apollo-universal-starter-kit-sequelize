@@ -6,22 +6,15 @@ export default class Counter {
   //   return knex('counter').first();
   // }
   async counterQuery() {
-    // let x = await models.Counter.findAll({ limit: 1 });
-    let x = await models.Counter.findOne({});
-    // let data = x.get({ plain: true });
-    // console.log(data);
-    // console.log('dataValues', x.dataValues);
-    return x;
+    return await models.Counter.findOne({});
   }
 
   // addCounter(amount) {
   //   return knex('counter').increment('amount', amount);
   // }
   async addCounter(amount) {
-    console.log('amount', amount);
-    let x = await models.Counter.increment('amount', { where: { amount: amount } });
-    let y = await models.Counter.findOne({});
-    console.log('Asdfasdf', y.get({ plain: true }));
-    return x;
+    let counter = await models.Counter.findOne({});
+    let _counter = await counter.increment('amount', { by: amount });
+    return await _counter.reload();
   }
 }
