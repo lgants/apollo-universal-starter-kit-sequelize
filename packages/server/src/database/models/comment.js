@@ -1,9 +1,6 @@
 'use strict';
 
-import Sequelize from 'sequelize';
-import models from './';
-
-export default async function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   var Comment = sequelize.define(
     'Comment',
     {
@@ -11,9 +8,9 @@ export default async function(sequelize, DataTypes) {
       post_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: models.Post,
-          key: 'id',
-          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+          model: sequelize.models.User,
+          key: 'id'
+          // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       }
     },

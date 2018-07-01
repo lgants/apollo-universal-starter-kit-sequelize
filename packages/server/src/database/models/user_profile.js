@@ -1,9 +1,6 @@
 'use strict';
 
-import Sequelize from 'sequelize';
-import models from './';
-
-export default async function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   var UserProfile = sequelize.define(
     'UserProfile',
     {
@@ -12,9 +9,9 @@ export default async function(sequelize, DataTypes) {
       user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: models.User,
-          key: 'id',
-          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+          model: sequelize.models.User,
+          key: 'id'
+          // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       }
     },

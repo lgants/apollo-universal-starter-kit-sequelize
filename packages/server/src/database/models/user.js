@@ -1,6 +1,6 @@
 'use strict';
 
-export default async function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   var User = sequelize.define(
     'User',
     {
