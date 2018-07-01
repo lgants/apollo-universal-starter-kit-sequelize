@@ -10,14 +10,6 @@ export async function up(queryInterface, Sequelize) {
     },
     amount: {
       type: Sequelize.INTEGER
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   });
 }

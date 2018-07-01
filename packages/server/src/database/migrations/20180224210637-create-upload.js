@@ -23,14 +23,6 @@ export async function up(queryInterface, Sequelize) {
     path: {
       type: Sequelize.STRING,
       notNull: true
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   });
 }

@@ -18,7 +18,7 @@ export default async function(sequelize, DataTypes) {
         }
       }
     },
-    {}
+    { timestamps: true }
   );
   UserProfile.associate = function() {
     // associations can be defined here

@@ -15,7 +15,7 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.STRING,
       unique: true
     },
-    password: {
+    password_hash: {
       type: Sequelize.STRING
     },
     role: {
@@ -25,14 +25,6 @@ export async function up(queryInterface, Sequelize) {
     is_active: {
       type: Sequelize.BOOLEAN,
       defaultValue: false
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   });
 }

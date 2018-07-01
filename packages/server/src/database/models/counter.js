@@ -1,9 +1,13 @@
 'use strict';
 
 export default function(sequelize, DataTypes) {
-  var Counter = sequelize.define('Counter', {
-    amount: { type: DataTypes.INTEGER }
-  });
+  var Counter = sequelize.define(
+    'Counter',
+    {
+      amount: DataTypes.INTEGER
+    },
+    { timestamps: true }
+  );
   Counter.associate = function() {
     // associations can be defined here
   };

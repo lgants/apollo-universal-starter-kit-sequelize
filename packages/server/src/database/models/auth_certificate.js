@@ -17,7 +17,7 @@ export default async function(sequelize, DataTypes) {
         }
       }
     },
-    {}
+    { timestamps: true }
   );
   // AuthCertificate.associate = function(models) {
   // models.Task.belongsTo(models.User, {

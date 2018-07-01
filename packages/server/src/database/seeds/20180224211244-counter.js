@@ -1,19 +1,14 @@
 'use strict';
 
-const initialAmount = 5;
 // (queryInterface, Sequelize)
 
 export default {
   up: queryInterface => {
-    return queryInterface.bulkInsert(
-      'Counter',
-      [
-        {
-          amount: initialAmount
-        }
-      ],
-      {}
-    );
+    return queryInterface.bulkInsert('Counter', [
+      {
+        amount: 5
+      }
+    ]);
   },
 
   down: queryInterface => {

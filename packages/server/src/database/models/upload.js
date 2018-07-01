@@ -9,7 +9,7 @@ export default async function(sequelize, DataTypes) {
       size: { type: DataTypes.STRING, allowNull: false },
       path: { type: DataTypes.STRING, allowNull: false }
     },
-    {}
+    { timestamps: true }
   );
   Upload.associate = function() {
     // associations can be defined here

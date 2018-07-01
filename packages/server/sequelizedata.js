@@ -1,5 +1,15 @@
 import settings from '../../settings';
 
+export const test = {
+  username: 'root',
+  password: null,
+  database: 'test-db',
+  host: 'localhost',
+  pool: settings.db.pool,
+  dialect: settings.db.dialect,
+  storage: ':memory:'
+};
+
 export const development = {
   username: 'root',
   password: null,
@@ -17,17 +27,8 @@ export const production = {
   host: 'localhost',
   pool: settings.db.pool,
   dialect: settings.db.dialect,
-  storage: settings.db.connection.production.filename
-};
-
-export const test = {
-  username: 'root',
-  password: null,
-  database: 'test-db',
-  host: 'localhost',
-  pool: settings.db.pool,
-  dialect: settings.db.dialect,
-  storage: ':memory:'
+  storage: settings.db.connection.production.filename,
+  timezone: 'utc'
 };
 
 // export {

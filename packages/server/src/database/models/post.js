@@ -7,7 +7,7 @@ export default async function(sequelize, DataTypes) {
       title: DataTypes.STRING,
       content: DataTypes.STRING
     },
-    {}
+    { timestamps: true }
   );
   Post.associate = function() {
     // associations can be defined here
