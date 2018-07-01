@@ -9,6 +9,7 @@ build
 .expo
 *.log
 *.sqlite3
+*.sqlite
 .DS_Store
 jsconfig.json
 public

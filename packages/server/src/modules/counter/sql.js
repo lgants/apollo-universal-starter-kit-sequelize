@@ -1,5 +1,5 @@
 // import knex from '../../sql/connector';
-import models from '../../database/models';
+import models from '../../sql/connector';
 
 export default class Counter {
   // counterQuery() {
