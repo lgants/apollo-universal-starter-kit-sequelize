@@ -8,17 +8,16 @@ import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
 
-import configjs from '../config/config';
+import config from '../../../sequelizefile';
+
 // import counter from './counter';
 
 // var config = require('../config/config.js')[env];
 
 var basename = path.basename(__filename);
-var env = process.env.NODE_ENV || 'development';
 
 const db = {};
 var sequelize;
-var config = configjs[env];
 
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -62,7 +61,10 @@ db.Sequelize = Sequelize;
 
 var model = sequelize['import']('../../server/src/database/models/counter');
 db[model.name] = model;
-db['Counter'].associate(db);
+console.log('model', model);
+console.log('db', db);
+console.log('name', model.name);
+// db['Counter'].associate(db);
 
 // db.counter = counter();
 // db.counter.associate(db);

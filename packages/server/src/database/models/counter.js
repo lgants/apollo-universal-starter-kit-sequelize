@@ -1,6 +1,6 @@
 'use strict';
 
-export default (sequelize, DataTypes) => {
+export default function(sequelize, DataTypes) {
   var Counter = sequelize.define('Counter', {
     amount: { type: DataTypes.INTEGER }
   });
@@ -14,4 +14,4 @@ export default (sequelize, DataTypes) => {
   //   });
   // };
   return Counter;
-};
+}

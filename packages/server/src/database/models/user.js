@@ -1,6 +1,6 @@
 'use strict';
 
-export default (sequelize, DataTypes) => {
+export default async function(sequelize, DataTypes) {
   var User = sequelize.define(
     'User',
     {
@@ -16,4 +16,4 @@ export default (sequelize, DataTypes) => {
     // associations can be defined here
   };
   return User;
-};
+}

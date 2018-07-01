@@ -3,7 +3,7 @@
 import Sequelize from 'sequelize';
 import models from './';
 
-export default (sequelize, DataTypes) => {
+export default async function(sequelize, DataTypes) {
   var Subscription = sequelize.define(
     'Subscription',
     {
@@ -30,4 +30,4 @@ export default (sequelize, DataTypes) => {
     // associations can be defined here
   };
   return Subscription;
-};
+}
