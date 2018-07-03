@@ -1,5 +1,7 @@
 import { Op } from 'sequelize';
 // import { returnId, orderedFor } from '../../sql/helpers';
+import { orderedFor } from '../../sql/helpers';
+
 // import knex from '../../sql/connector';
 import models from '../../database/models';
 
@@ -12,8 +14,8 @@ export default class Post {
   //     .limit(limit)
   //     .offset(after);
   // }
-  postsPagination(limit, offset) {
-    return models.Post.findAll({
+  async postsPagination(limit, offset) {
+    return await models.Post.findAll({
       attributes: ['id', 'title', 'content'],
       order: [['id', 'DESC']],
       limit,
@@ -30,14 +32,16 @@ export default class Post {
   //   return orderedFor(res, postIds, 'postId', false);
   // }
   async getCommentsForPostIds(postIds) {
-    return models.Post.findAll({
-      attributes: ['id', 'content', 'post_id AS postId'],
+    const res = await models.Comment.findAll({
+      attributes: ['id', 'content', ['post_id', 'postId']],
       where: {
         post_id: {
           [Op.in]: postIds
         }
       }
     });
+
+    return orderedFor(res, postIds, 'postId', false);
   }
 
   // getTotal() {
@@ -45,8 +49,8 @@ export default class Post {
   //     .countDistinct('id as count')
   //     .first();
   // }
-  getTotal() {
-    return models.Post.count();
+  async getTotal() {
+    return await models.Post.count();
   }
 
   // post(id) {
@@ -56,8 +60,8 @@ export default class Post {
   //     .where('id', '=', id)
   //     .first();
   // }
-  post(id) {
-    return models.Post.findOne({
+  async post(id) {
+    return await models.Post.findOne({
       attributes: ['id', 'title', 'content'],
       where: {
         id
@@ -68,8 +72,8 @@ export default class Post {
   // addPost({ title, content }) {
   //   return returnId(knex('post')).insert({ title, content });
   // }
-  addPost({ title, content }) {
-    return models.Post.create({
+  async addPost({ title, content }) {
+    return await models.Post.create({
       title,
       content
     });
@@ -80,8 +84,8 @@ export default class Post {
   //     .where('id', '=', id)
   //     .del();
   // }
-  deletePost(id) {
-    return models.Post.destroy({
+  async deletePost(id) {
+    return await models.Post.destroy({
       where: {
         id
       }
@@ -96,8 +100,8 @@ export default class Post {
   //       content: content
   //     });
   // }
-  editPost({ id, title, content }) {
-    return models.Post.update(
+  async editPost({ id, title, content }) {
+    return await models.Post.update(
       { title, content },
       {
         where: {
@@ -110,8 +114,8 @@ export default class Post {
   // addComment({ content, postId }) {
   //   return returnId(knex('comment')).insert({ content, post_id: postId });
   // }
-  addComment({ content, postId }) {
-    return models.Comment.create({
+  async addComment({ content, postId }) {
+    return await models.Comment.create({
       content,
       post_id: postId
     });
@@ -124,8 +128,8 @@ export default class Post {
   //     .where('id', '=', id)
   //     .first();
   // }
-  getComment(id) {
-    return models.Comment.findOne({
+  async getComment(id) {
+    return await models.Comment.findOne({
       attributes: ['id', 'content'],
       where: {
         id
@@ -138,8 +142,8 @@ export default class Post {
   //     .where('id', '=', id)
   //     .del();
   // }
-  deleteComment(id) {
-    return models.Comment.destroy({
+  async deleteComment(id) {
+    return await models.Comment.destroy({
       where: {
         id
       }
@@ -153,8 +157,8 @@ export default class Post {
   //       content: content
   //     });
   // }
-  editComment({ id, content }) {
-    return models.Post.update(
+  async editComment({ id, content }) {
+    return await models.Post.update(
       { content },
       {
         where: {

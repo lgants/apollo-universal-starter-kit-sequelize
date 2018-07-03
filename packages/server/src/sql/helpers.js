@@ -1,9 +1,12 @@
 import { groupBy } from 'lodash';
-import settings from '../../../../settings';
+// import settings from '../../../../settings';
 
 // export const returnId = knexTable => (settings.db.dbType === 'sqlite' ? knexTable : knexTable.returning('id'));
 
-export const returnId = sequelizeTable => (settings.db.dbType === 'sqlite' ? sequelizeTable : sequelizeTable.id);
+// export const returnId = sequelizeTable => (settings.db.dbType === 'sqlite' ? sequelizeTable : sequelizeTable.id);
+
+// NOTE: deprecate this method; not necessary with sequelize
+export const returnId = sequelizeTable => sequelizeTable.id;
 
 // export const truncateTables = async (knex, Promise, tables) => {
 //   if (settings.db.dbType === 'sqlite') {
