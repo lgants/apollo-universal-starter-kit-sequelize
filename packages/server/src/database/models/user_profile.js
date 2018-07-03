@@ -1,6 +1,7 @@
 'use strict';
 
 export default function(sequelize, DataTypes) {
+  console.log('aaaaaa', sequelize.models.User);
   var UserProfile = sequelize.define(
     'UserProfile',
     {
@@ -15,7 +16,7 @@ export default function(sequelize, DataTypes) {
         }
       }
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, underscored: true, freezeTableName: true }
   );
   UserProfile.associate = function() {
     // associations can be defined here

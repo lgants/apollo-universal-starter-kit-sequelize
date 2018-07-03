@@ -1,6 +1,6 @@
 // Helpers
 // import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
-import { camelizeKeys } from 'humps';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 // import { has } from 'lodash';
 import bcrypt from 'bcryptjs';
 // import models from '../../database/models';
@@ -252,7 +252,7 @@ class User {
       role = 'user';
     }
 
-    return db.User.create({
+    return await db.User.create({
       username,
       email,
       role,
@@ -346,17 +346,20 @@ class User {
   //   }
   // }
 
-  async editUserProfile({ id }) {
-    // async editUserProfile({ id, profile }) {
-    const userProfile = db.UserProfile.findOne({ attributes: ['id'], where: { user_id: id } });
+  async editUserProfile({ id, profile }) {
+    const userProfile = await db.UserProfile.findOne({ attributes: ['id'], where: { user_id: id } });
 
     if (userProfile) {
-      return db.UserProfile.update({
-        where: { user_id: id }
-      });
+      return await db.UserProfile.update(
+        {
+          ...decamelizeKeys(profile)
+        },
+        {
+          where: { user_id: id }
+        }
+      );
     } else {
-      // return returnId(knex('user_profile')).insert({ ...decamelizeKeys(profile), user_id: id });
-      return userProfile;
+      return await db.UserProfile.create({ ...decamelizeKeys(profile), user_id: id });
     }
   }
 
@@ -387,15 +390,15 @@ class User {
       certificate: { serial }
     }
   }) {
-    const userProfile = db.AuthCertificate.findOne({
+    const userProfile = await db.AuthCertificate.findOne({
       where: { user_id: id }
     });
 
     if (userProfile) {
-      return db.AuthCertificate.update({ serial }, { where: { user_id: id } });
+      return await db.AuthCertificate.update({ serial }, { where: { user_id: id } });
     } else {
       // return returnId(knex('auth_certificate')).insert({ serial, user_id: id });
-      return null;
+      return await db.AuthCertificate.create({ serial, user_id: id });
     }
   }
 
@@ -458,8 +461,17 @@ class User {
   async getUserByEmail(email) {
     return camelizeKeys(
       await db.User.findOne({
-        where: { email },
-        include: [db.UserProfile]
+        attributes: [
+          'id',
+          'username',
+          'role',
+          'is_active',
+          'email',
+          ['up.first_name', 'first_name'],
+          ['up.last_name', 'last_name']
+        ],
+        include: [{ model: db.UserProfile, as: 'up', required: false }],
+        where: { email }
       })
     );
   }
@@ -584,9 +596,17 @@ class User {
 
   async getUserByUsername(username) {
     return camelizeKeys(
-      db.User.findOne({
-        attributes: ['id', 'username', 'role', 'is_active', 'email'],
-        inlcude: [{ model: db.UsesrProfile, attributes: ['first_name', 'last_name'], required: false }],
+      await db.User.findOne({
+        attributes: [
+          'id',
+          'username',
+          'role',
+          'is_active',
+          'email',
+          ['up.first_name', 'first_name'],
+          ['up.last_name', 'last_name']
+        ],
+        include: [{ model: db.UserProfile, as: 'up', required: false }],
         where: { username }
       })
     );

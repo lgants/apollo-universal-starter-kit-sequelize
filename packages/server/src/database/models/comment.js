@@ -8,13 +8,13 @@ export default function(sequelize, DataTypes) {
       post_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: sequelize.models.User,
+          model: sequelize.models.Post,
           key: 'id'
           // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       }
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, underscored: true, freezeTableName: true }
   );
   Comment.associate = function() {
     // associations can be defined here

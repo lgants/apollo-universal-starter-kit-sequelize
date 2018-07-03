@@ -71,8 +71,8 @@ export default pubsub => ({
       async (obj, { input }, { User, user, req: { universalCookies }, mailer, req, req: { t } }) => {
         try {
           const e = new FieldError();
-
           const userExists = await User.getUserByUsername(input.username);
+
           if (userExists) {
             e.setError('username', t('user:usernameIsExisted'));
           }
@@ -88,7 +88,8 @@ export default pubsub => ({
 
           e.throwIf();
 
-          const [createdUserId] = await User.register({ ...input });
+          // const [createdUserId] = await User.register({ ...input });
+          const { id: createdUserId } = await User.register({ ...input });
           await User.editUserProfile({ id: createdUserId, ...input });
 
           if (settings.user.auth.certificate.enabled) {

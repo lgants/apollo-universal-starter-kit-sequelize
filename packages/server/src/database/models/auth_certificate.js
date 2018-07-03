@@ -14,7 +14,7 @@ export default function(sequelize, DataTypes) {
         }
       }
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, underscored: true, freezeTableName: true }
   );
   // AuthCertificate.associate = function(models) {
   // models.Task.belongsTo(models.User, {

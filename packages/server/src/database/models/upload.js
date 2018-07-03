@@ -9,7 +9,7 @@ export default function(sequelize, DataTypes) {
       size: { type: DataTypes.STRING, allowNull: false },
       path: { type: DataTypes.STRING, allowNull: false }
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, underscored: true, freezeTableName: true }
   );
   Upload.associate = function() {
     // associations can be defined here

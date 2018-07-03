@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
       title: DataTypes.STRING,
       content: DataTypes.STRING
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, underscored: true, freezeTableName: true }
   );
   Post.associate = function() {
     // associations can be defined here
