@@ -3,18 +3,18 @@
 import models from '../../database/models';
 
 export default class Upload {
-  files() {
+  async files() {
     // return knex('upload').select('*');
-    return models.Upload.findAll();
+    return await models.Upload.findAll();
   }
 
-  file(id) {
+  async file(id) {
     // return knex('upload')
     //   .select('*')
     //   .where({ id })
     //   .first();
 
-    return models.Upload.findOne({
+    return await models.Upload.findOne({
       id
     });
   }
@@ -22,8 +22,8 @@ export default class Upload {
   // saveFiles(files) {
   //   return knex('upload').insert(files);
   // }
-  saveFiles(files) {
-    return models.Upload.create(files);
+  async saveFiles(files) {
+    return await models.Upload.create(files);
   }
 
   // deleteFile(id) {
@@ -31,7 +31,7 @@ export default class Upload {
   //     .where({ id })
   //     .del();
   // }
-  deleteFile(id) {
-    return models.Upload.destroy({ where: { id } });
+  async deleteFile(id) {
+    return await models.Upload.destroy({ where: { id } });
   }
 }

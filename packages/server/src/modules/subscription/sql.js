@@ -32,7 +32,6 @@ export default class Subscription {
   //       .first()
   //   );
   // }
-
   async getSubscriptionByStripeSubscriptionId(stripeSubscriptionId) {
     return camelizeKeys(
       models.Subscription.findOne({
