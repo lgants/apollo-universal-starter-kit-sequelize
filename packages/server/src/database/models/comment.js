@@ -4,20 +4,14 @@ export default function(sequelize, DataTypes) {
   var Comment = sequelize.define(
     'Comment',
     {
-      content: DataTypes.STRING,
-      post_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: sequelize.models.Post,
-          key: 'id'
-          // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-      }
+      content: DataTypes.STRING
     },
-    { timestamps: true, underscored: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true }
   );
-  Comment.associate = function() {
-    // associations can be defined here
+  Comment.associate = function(models) {
+    models.Comment.belongsTo(models.Post, {
+      foreignKey: 'post_id'
+    });
   };
   return Comment;
 }

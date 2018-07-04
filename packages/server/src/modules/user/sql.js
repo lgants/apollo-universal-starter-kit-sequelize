@@ -459,21 +459,23 @@ class User {
   // }
 
   async getUserByEmail(email) {
-    return camelizeKeys(
-      await db.User.findOne({
-        attributes: [
-          'id',
-          'username',
-          'role',
-          'is_active',
-          'email',
-          ['up.first_name', 'first_name'],
-          ['up.last_name', 'last_name']
-        ],
-        include: [{ model: db.UserProfile, as: 'up', required: false }],
-        where: { email }
-      })
-    );
+    let x = await db.User.findOne({
+      attributes: [
+        'id',
+        'username',
+        'role',
+        'is_active',
+        'email',
+        ['up.first_name', 'first_name'],
+        ['up.last_name', 'last_name']
+      ],
+      include: [{ model: db.UserProfile, as: 'up', required: false }],
+      where: { email }
+    });
+
+    console.log('gggggg', x);
+
+    return camelizeKeys();
   }
 
   // async getUserByFbIdOrEmail(id, email) {
@@ -602,11 +604,11 @@ class User {
           'username',
           'role',
           'is_active',
-          'email',
-          ['up.first_name', 'first_name'],
-          ['up.last_name', 'last_name']
+          'email'
+          // ['up.first_name', 'first_name'],
+          // ['up.last_name', 'last_name']
         ],
-        include: [{ model: db.UserProfile, as: 'up', required: false }],
+        include: [{ model: db.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
         where: { username }
       })
     );
