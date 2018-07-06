@@ -81,6 +81,8 @@ export default () => ({
             isActive = true;
           }
 
+          console.log('solo bro', context);
+
           [userId] = await context.User.register({ ...input, isActive });
 
           // if user has previously logged with facebook auth
