@@ -460,27 +460,23 @@ class User {
   // }
 
   async getUserByEmail(email) {
-    // eslint-disable-next-line
-    // debugger;
-
-    let x = await models.User.findOne({
-      attributes: [
-        'id',
-        'username',
-        'role',
-        'is_active',
-        'email'
-        // ['up.first_name', 'first_name'],
-        // ['up.last_name', 'last_name']
-      ],
-      // include: [{ model: models.UserProfile, as: 'up', required: false }],
-      include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
-      where: { email }
-    });
-
-    console.log('gggggg', x);
-
-    return camelizeKeys();
+    return camelizeKeys(
+      await models.User.findOne({
+        attributes: [
+          'id',
+          'username',
+          'role',
+          'is_active',
+          'email'
+          // ['up.first_name', 'first_name'],
+          // ['up.last_name', 'last_name']
+        ],
+        // include: [{ model: models.UserProfile, as: 'up', required: false }],
+        include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
+        where: { email },
+        raw: true
+      })
+    );
   }
 
   // async getUserByFbIdOrEmail(id, email) {
@@ -582,7 +578,7 @@ class User {
   // async getUserByGoogleIdOrEmail(id, email) {
   //   return camelizeKeys(
   //     models.User.findOne({
-  //       includes: [models.UserProfile, models.AuthGoogle],
+  //       include: [models.UserProfile, models.AuthGoogle],
   //       where: {
   //         [Op.or]: [{ google_id: id }, { email }]
   //       }
@@ -614,7 +610,8 @@ class User {
           // ['up.last_name', 'last_name']
         ],
         include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
-        where: { username }
+        where: { username },
+        raw: true
       })
     );
   }
@@ -643,10 +640,11 @@ class User {
     return camelizeKeys(
       await models.User.findOne({
         attributes: ['id', 'username', 'password_hash', 'role', 'is_active', 'email'],
-        includes: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
+        include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
         where: {
           [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
-        }
+        },
+        raw: true
       })
     );
   }

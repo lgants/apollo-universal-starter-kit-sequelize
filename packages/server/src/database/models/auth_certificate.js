@@ -8,13 +8,6 @@ export default function(sequelize, DataTypes) {
     },
     { timestamps: true, freezeTableName: true }
   );
-  // AuthCertificate.associate = function(models) {
-  // models.Task.belongsTo(models.User, {
-  //   onDelete: "CASCADE",
-  //   foreignKey: {
-  //     allowNull: false
-  //   }
-  // });
   AuthCertificate.associate = function(models) {
     models.AuthCertificate.belongsTo(models.User, {
       foreignKey: 'user_id'

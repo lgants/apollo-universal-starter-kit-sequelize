@@ -61,7 +61,6 @@ export default () => ({
         req: { t }
       }
     ) {
-      console.log('register');
       try {
         const e = new FieldError();
         const userExists = await User.getUserByUsername(input.username);
@@ -169,14 +168,14 @@ export default () => ({
 
         const token = Buffer.from(reset.token, 'base64').toString();
         const { email, password } = jwt.verify(token, settings.user.secret);
-        const user = await context.User.getUserByEmail(email);
+        const user = await User.getUserByEmail(email);
         if (user.passwordHash !== password) {
           e.setError('token', t('user:auth.password.invalidToken'));
           e.throwIf();
         }
 
         if (user) {
-          await context.User.updatePassword(user.id, reset.password);
+          await User.updatePassword(user.id, reset.password);
         }
         return { errors: null };
       } catch (e) {

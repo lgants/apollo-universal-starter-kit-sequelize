@@ -13,7 +13,8 @@ export default {
       }
     },
     password: {
-      confirm: true,
+      // confirm: true,
+      confirm: false,
       sendConfirmationEmail: true,
       sendAddNewUserEmail: true,
       enabled: true
