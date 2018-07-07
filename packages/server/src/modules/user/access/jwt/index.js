@@ -7,7 +7,7 @@ import Feature from '../connector';
 import settings from '../../../../../../../settings';
 
 const grant = async user => {
-  console.log('grant jwt', user);
+  // console.log('grant jwt', user);
   const refreshSecret = settings.user.secret + user.passwordHash;
   const [accessToken, refreshToken] = await createTokens(user, settings.user.secret, refreshSecret);
 
@@ -18,7 +18,7 @@ const grant = async user => {
 };
 
 const getCurrentUser = async ({ req }) => {
-  console.log('getCurrentUser jwt req', req);
+  // console.log('getCurrentUser jwt req', req);
   const authorization = req && req.headers['authorization'];
   const parts = authorization && authorization.split(' ');
   const token = parts && parts.length === 2 && parts[1];

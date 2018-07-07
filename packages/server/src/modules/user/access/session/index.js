@@ -17,14 +17,14 @@ const grant = async (user, req) => {
 };
 
 const getCurrentUser = async ({ req }) => {
-  console.log('session getCurrentUser', req.session);
+  // console.log('session getCurrentUser', req.session);
   if (req && req.session.userId) {
     return await User.getUser(req.session.userId);
   }
 };
 
 const attachSession = req => {
-  console.log('attach session', req.session);
+  // console.log('attach session', req.session);
   if (req) {
     req.session = readSession(req);
     if (!req.session) {
@@ -42,7 +42,7 @@ const attachSession = req => {
 
 const createContextFunc = async ({ req, connectionParams, webSocket, context }) => {
   attachSession(req);
-  console.log('here');
+  // console.log('here');
   const user = context.user || (await getCurrentUser({ req, connectionParams, webSocket }));
   const auth = {
     isAuthenticated: !!user,
