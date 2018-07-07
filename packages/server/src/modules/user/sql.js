@@ -81,13 +81,7 @@ class User {
   //
   //   return camelizeKeys(await queryBuilder);
   // }
-
-  // async getUsers(orderBy, filter) {
   async getUsers(orderBy, filter) {
-    // query { where: { is_active: '' } }
-    // filter { searchText: '', role: '', isActive: true }
-    // orderBy { column: '', order: '' }
-
     let queryCriteria = {};
 
     // add order by
@@ -217,7 +211,6 @@ class User {
   //       .first()
   //   );
   // }
-
   async getUser(id) {
     return camelizeKeys(
       await models.User.findOne({
@@ -296,7 +289,6 @@ class User {
   //       .first()
   //   );
   // }
-
   async getUserWithPassword(id) {
     return camelizeKeys(
       await models.User.findOne({
@@ -334,7 +326,6 @@ class User {
   //       .first()
   //   );
   // }
-
   async getUserWithSerial(serial) {
     return camelizeKeys(
       await models.User.findOne({
@@ -374,7 +365,6 @@ class User {
   //
   //   return returnId(knex('user')).insert({ username, email, role, password_hash: passwordHash, is_active: !!isActive });
   // }
-
   async register({ username, email, password, role, isActive }) {
     const passwordHash = await bcrypt.hash(password, 12);
 
@@ -389,14 +379,11 @@ class User {
       password_hash: passwordHash,
       is_active: !!isActive
     });
-
-    // return returnId(knex('user')).insert({ username, email, role, password_hash: passwordHash, is_active: !!isActive });
   }
 
   // createFacebookAuth({ id, displayName, userId }) {
   //   return returnId(knex('auth_facebook')).insert({ fb_id: id, display_name: displayName, user_id: userId });
   // }
-
   async createFacebookAuth({ id, displayName, userId }) {
     return await models.AuthFacebook.create({
       fb_id: id,
@@ -408,11 +395,17 @@ class User {
   // createGithubAuth({ id, displayName, userId }) {
   //   return returnId(knex('auth_github')).insert({ gh_id: id, display_name: displayName, user_id: userId });
   // }
+  async createGithubAuth({ id, displayName, userId }) {
+    return await models.AuthGithub.create({
+      gh_id: id,
+      display_name: displayName,
+      user_id: userId
+    });
+  }
 
   // createGoogleOAuth({ id, displayName, userId }) {
   //   return returnId(knex('auth_google')).insert({ google_id: id, display_name: displayName, user_id: userId });
   // }
-
   async createGoogleOAuth({ id, displayName, userId }) {
     return await models.AuthGoogle.create({
       google_id: id,
@@ -424,6 +417,13 @@ class User {
   // createLinkedInAuth({ id, displayName, userId }) {
   //   return returnId(knex('auth_linkedin')).insert({ ln_id: id, display_name: displayName, user_id: userId });
   // }
+  async createLinkedInAuth({ id, displayName, userId }) {
+    return await models.AuthLinkedin.create({
+      ln_id: id,
+      display_name: displayName,
+      user_id: userId
+    });
+  }
 
   // async editUser({ id, username, email, role, isActive, password }) {
   //   let localAuthInput = { email };
@@ -441,7 +441,7 @@ class User {
   //     })
   //     .where({ id });
   // }
-
+  // NOTE: STOPPED HERE
   async editUser({ id, username, email, role, isActive, password }) {
     let localAuthInput = { email };
     if (password) {
