@@ -166,17 +166,62 @@ class User {
   // }
 
   async getUser(id) {
-    const queryBuilder = await models.User.findOne({
-      where: { id: id },
-      include: [
-        { model: models.UserProfile },
-        { model: models.AuthCertificate },
-        { model: models.AuthFacebook },
-        { model: models.AuthGoogle }
-      ]
-    });
-
-    return queryBuilder;
+    return camelizeKeys(
+      await models.User.findOne({
+        where: { id },
+        attributes: [
+          'id',
+          'username',
+          'role',
+          'is_active',
+          'email',
+          [Sequelize.col('UserProfile.first_name'), 'first_name'],
+          [Sequelize.col('UserProfile.first_name'), 'last_name'],
+          [Sequelize.col('AuthCertificate.serial'), 'serial'],
+          [Sequelize.col('AuthFacebook.fb_id'), 'fb_id'],
+          [Sequelize.col('AuthFacebook.display_name'), 'fbDisplayName'],
+          [Sequelize.col('AuthLinkedin.ln_id'), 'ln_id'],
+          [Sequelize.col('AuthLinkedin.display_name'), 'lnDisplayName'],
+          [Sequelize.col('AuthGithub.gh_id'), 'gh_id'],
+          [Sequelize.col('AuthGithub.display_name'), 'ghDisplayName'],
+          [Sequelize.col('AuthGoogle.google_id'), 'google_id'],
+          [Sequelize.col('AuthGoogle.display_name'), 'googleDisplayName']
+        ],
+        include: [
+          {
+            model: models.UserProfile,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthCertificate,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthFacebook,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthLinkedin,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthGithub,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthGoogle,
+            required: false,
+            attributes: []
+          }
+        ],
+        raw: true
+      })
+    );
   }
 
   // async getUserWithPassword(id) {
@@ -637,16 +682,22 @@ class User {
   //   );
   // }
   async getUserByUsernameOrEmail(usernameOrEmail) {
-    return camelizeKeys(
-      await models.User.findOne({
-        attributes: ['id', 'username', 'password_hash', 'role', 'is_active', 'email'],
-        include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
-        where: {
-          [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
-        },
-        raw: true
-      })
-    );
+    let x = await models.User.findOne({
+      attributes: ['id', 'username', 'password_hash', 'role', 'is_active', 'email'],
+      include: [
+        {
+          model: models.UserProfile,
+          attributes: [['first_name', 'first_name'], ['last_name', 'last_name']],
+          required: false
+        }
+      ],
+      where: {
+        [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+      },
+      raw: true
+    });
+    // console.log('asdf', x);
+    return camelizeKeys(x);
   }
 }
 const userDAO = new User();

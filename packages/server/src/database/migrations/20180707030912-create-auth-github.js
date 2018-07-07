@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   down: queryInterface => {
-    return queryInterface.dropTable('AuthGithubs');
+    return queryInterface.dropTable('AuthGithub');
   }
 };

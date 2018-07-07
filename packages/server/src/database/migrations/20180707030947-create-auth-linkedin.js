@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      li_id: {
+      ln_id: {
         type: Sequelize.STRING
       },
       display_name: {
@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   down: queryInterface => {
-    return queryInterface.dropTable('AuthLinkedins');
+    return queryInterface.dropTable('AuthLinkedin');
   }
 };

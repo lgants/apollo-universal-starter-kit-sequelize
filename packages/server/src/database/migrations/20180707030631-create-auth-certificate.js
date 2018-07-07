@@ -31,6 +31,6 @@ module.exports = {
     });
   },
   down: queryInterface => {
-    return queryInterface.dropTable('AuthCertificates');
+    return queryInterface.dropTable('AuthCertificate');
   }
 };
