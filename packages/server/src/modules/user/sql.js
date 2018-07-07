@@ -4,7 +4,8 @@ import { camelizeKeys, decamelizeKeys } from 'humps';
 // import { has } from 'lodash';
 import bcrypt from 'bcryptjs';
 // import models from '../../database/models';
-import db from '../../database/models';
+// import models from '../../database/models';
+import models from '../../sql/connector';
 
 // import knex from '../../sql/connector';
 // import { returnId } from '../../sql/helpers';
@@ -83,12 +84,12 @@ class User {
 
   async getUsers() {
     // async getUsers(orderBy, filter) {
-    const queryBuilder = db.User.findAll({
+    const queryBuilder = await models.User.findAll({
       include: [
-        { model: db.UserProfile },
-        { model: db.AuthCertificate },
-        { model: db.AuthFacebook },
-        { model: db.AuthGoogle }
+        { model: models.UserProfile },
+        { model: models.AuthCertificate },
+        { model: models.AuthFacebook },
+        { model: models.AuthGoogle }
       ]
     });
 
@@ -165,13 +166,13 @@ class User {
   // }
 
   async getUser(id) {
-    const queryBuilder = db.User.findOne({
+    const queryBuilder = await models.User.findOne({
       where: { id: id },
       include: [
-        { model: db.UserProfile },
-        { model: db.AuthCertificate },
-        { model: db.AuthFacebook },
-        { model: db.AuthGoogle }
+        { model: models.UserProfile },
+        { model: models.AuthCertificate },
+        { model: models.AuthFacebook },
+        { model: models.AuthGoogle }
       ]
     });
 
@@ -199,9 +200,9 @@ class User {
   // }
 
   async getUserWithPassword(id) {
-    const queryBuilder = db.User.findOne({
+    const queryBuilder = await models.User.findOne({
       where: { id: id },
-      include: [{ model: db.UserProfile }]
+      include: [{ model: models.UserProfile }]
     });
 
     return queryBuilder;
@@ -220,11 +221,11 @@ class User {
   // }
 
   async getUserWithSerial(serial) {
-    const queryBuilder = db.User.findOne({
+    const queryBuilder = await models.User.findOne({
       include: [
-        { model: db.UserProfile },
+        { model: models.UserProfile },
         {
-          model: db.AuthCertificate,
+          model: models.AuthCertificate,
           where: {
             serial
           }
@@ -252,7 +253,7 @@ class User {
       role = 'user';
     }
 
-    return await db.User.create({
+    return await models.User.create({
       username,
       email,
       role,
@@ -267,8 +268,8 @@ class User {
   //   return returnId(knex('auth_facebook')).insert({ fb_id: id, display_name: displayName, user_id: userId });
   // }
 
-  createFacebookAuth({ id, displayName, userId }) {
-    return db.AuthFacebook.create({
+  async createFacebookAuth({ id, displayName, userId }) {
+    return await models.AuthFacebook.create({
       fb_id: id,
       display_name: displayName,
       user_id: userId
@@ -283,8 +284,8 @@ class User {
   //   return returnId(knex('auth_google')).insert({ google_id: id, display_name: displayName, user_id: userId });
   // }
 
-  createGoogleOAuth({ id, displayName, userId }) {
-    return db.AuthGoogle.create({
+  async createGoogleOAuth({ id, displayName, userId }) {
+    return await models.AuthGoogle.create({
       google_id: id,
       display_name: displayName,
       user_id: userId
@@ -319,7 +320,7 @@ class User {
       localAuthInput = { email, password_hash: passwordHash };
     }
 
-    return db.User.update(
+    return await models.User.update(
       {
         username,
         role,
@@ -347,10 +348,10 @@ class User {
   // }
 
   async editUserProfile({ id, profile }) {
-    const userProfile = await db.UserProfile.findOne({ attributes: ['id'], where: { user_id: id } });
+    const userProfile = await models.UserProfile.findOne({ attributes: ['id'], where: { user_id: id } });
 
     if (userProfile) {
-      return await db.UserProfile.update(
+      return await models.UserProfile.update(
         {
           ...decamelizeKeys(profile)
         },
@@ -359,7 +360,7 @@ class User {
         }
       );
     } else {
-      return await db.UserProfile.create({ ...decamelizeKeys(profile), user_id: id });
+      return await models.UserProfile.create({ ...decamelizeKeys(profile), user_id: id });
     }
   }
 
@@ -390,15 +391,15 @@ class User {
       certificate: { serial }
     }
   }) {
-    const userProfile = await db.AuthCertificate.findOne({
+    const userProfile = await models.AuthCertificate.findOne({
       where: { user_id: id }
     });
 
     if (userProfile) {
-      return await db.AuthCertificate.update({ serial }, { where: { user_id: id } });
+      return await models.AuthCertificate.update({ serial }, { where: { user_id: id } });
     } else {
       // return returnId(knex('auth_certificate')).insert({ serial, user_id: id });
-      return await db.AuthCertificate.create({ serial, user_id: id });
+      return await models.AuthCertificate.create({ serial, user_id: id });
     }
   }
 
@@ -408,8 +409,8 @@ class User {
   //     .del();
   // }
 
-  deleteUser(id) {
-    return db.User.destroy({
+  async deleteUser(id) {
+    return await models.User.destroy({
       where: { id }
     });
   }
@@ -425,7 +426,7 @@ class User {
   async updatePassword(id, newPassword) {
     const passwordHash = await bcrypt.hash(newPassword, 12);
 
-    return db.User.update({ password_hash: passwordHash }, { where: { id } });
+    return await models.User.update({ password_hash: passwordHash }, { where: { id } });
   }
 
   // updateActive(id, isActive) {
@@ -434,8 +435,8 @@ class User {
   //     .where({ id });
   // }
 
-  updateActive(id, isActive) {
-    return db.User.update({ is_active: isActive }, { where: { id } });
+  async updateActive(id, isActive) {
+    return await models.User.update({ is_active: isActive }, { where: { id } });
   }
 
   // async getUserByEmail(email) {
@@ -462,7 +463,7 @@ class User {
     // eslint-disable-next-line
     // debugger;
 
-    let x = await db.User.findOne({
+    let x = await models.User.findOne({
       attributes: [
         'id',
         'username',
@@ -472,8 +473,8 @@ class User {
         // ['up.first_name', 'first_name'],
         // ['up.last_name', 'last_name']
       ],
-      // include: [{ model: db.UserProfile, as: 'up', required: false }],
-      include: [{ model: db.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
+      // include: [{ model: models.UserProfile, as: 'up', required: false }],
+      include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
       where: { email }
     });
 
@@ -602,7 +603,7 @@ class User {
 
   async getUserByUsername(username) {
     return camelizeKeys(
-      await db.User.findOne({
+      await models.User.findOne({
         attributes: [
           'id',
           'username',
@@ -612,7 +613,7 @@ class User {
           // ['up.first_name', 'first_name'],
           // ['up.last_name', 'last_name']
         ],
-        include: [{ model: db.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
+        include: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
         where: { username }
       })
     );
@@ -640,9 +641,9 @@ class User {
   // }
   async getUserByUsernameOrEmail(usernameOrEmail) {
     return camelizeKeys(
-      db.User.findOne({
+      await models.User.findOne({
         attributes: ['id', 'username', 'password_hash', 'role', 'is_active', 'email'],
-        includes: [{ model: db.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
+        includes: [{ model: models.UserProfile, attributes: ['first_name', 'last_name'], required: false }],
         where: {
           [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
         }

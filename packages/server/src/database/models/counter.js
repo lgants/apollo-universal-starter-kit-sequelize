@@ -11,11 +11,5 @@ export default function(sequelize, DataTypes) {
   Counter.associate = function() {
     // associations can be defined here
   };
-  // Todo.associate = (models) => {
-  //   Todo.hasMany(models.TodoItem, {
-  //     foreignKey: 'todoId',
-  //     as: 'todoItems',
-  //   });
-  // };
   return Counter;
 }

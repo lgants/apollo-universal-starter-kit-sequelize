@@ -11,20 +11,14 @@ export default function(sequelize, DataTypes) {
       expiry_month: DataTypes.INTEGER,
       expiry_year: DataTypes.INTEGER,
       last4: DataTypes.STRING,
-      brand: DataTypes.STRING,
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: sequelize.models.User,
-          key: 'id'
-          // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-      }
+      brand: DataTypes.STRING
     },
     { timestamps: true, freezeTableName: true }
   );
-  Subscription.associate = function() {
-    // associations can be defined here
+  Subscription.associate = function(models) {
+    models.Subscription.belongsTo(models.User, {
+      foreignKey: 'user_id'
+    });
   };
   return Subscription;
 }

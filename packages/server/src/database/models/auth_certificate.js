@@ -4,15 +4,7 @@ export default function(sequelize, DataTypes) {
   var AuthCertificate = sequelize.define(
     'AuthCertificate',
     {
-      serial: { type: DataTypes.STRING, unique: true },
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: sequelize.models.User,
-          key: 'id'
-          // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-      }
+      serial: { type: DataTypes.STRING, unique: true }
     },
     { timestamps: true, freezeTableName: true }
   );
@@ -23,8 +15,10 @@ export default function(sequelize, DataTypes) {
   //     allowNull: false
   //   }
   // });
-  AuthCertificate.associate = function() {
-    // associations can be defined here
+  AuthCertificate.associate = function(models) {
+    models.AuthCertificate.belongsTo(models.User, {
+      foreignKey: 'user_id'
+    });
   };
   return AuthCertificate;
 }

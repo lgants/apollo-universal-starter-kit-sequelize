@@ -56,10 +56,12 @@ export default () => ({
       obj,
       { input },
       {
-        User,
+        mailer,
+        req,
         req: { t }
       }
     ) {
+      console.log('register');
       try {
         const e = new FieldError();
         const userExists = await User.getUserByUsername(input.username);
@@ -81,24 +83,25 @@ export default () => ({
             isActive = true;
           }
 
-          console.log('solo bro', context);
+          // [userId] = await context.User.register({ ...input, isActive });
 
-          [userId] = await context.User.register({ ...input, isActive });
+          let user = await User.register({ ...input, isActive });
+          userId = user.id;
 
           // if user has previously logged with facebook auth
         } else {
-          await context.User.updatePassword(emailExists.userId, input.password);
+          await User.updatePassword(emailExists.userId, input.password);
           userId = emailExists.userId;
         }
 
-        const user = await context.User.getUser(userId);
+        const user = await User.getUser(userId);
 
-        if (context.mailer && settings.user.auth.password.sendConfirmationEmail && !emailExists && context.req) {
+        if (mailer && settings.user.auth.password.sendConfirmationEmail && !emailExists && req) {
           // async email
           jwt.sign({ user: pick(user, 'id') }, settings.user.secret, { expiresIn: '1d' }, (err, emailToken) => {
             const encodedToken = Buffer.from(emailToken).toString('base64');
             const url = `${__WEBSITE_URL__}/confirmation/${encodedToken}`;
-            context.mailer.sendMail({
+            mailer.sendMail({
               from: `${settings.app.name} <${process.env.EMAIL_USER}>`,
               to: user.email,
               subject: 'Confirm Email',

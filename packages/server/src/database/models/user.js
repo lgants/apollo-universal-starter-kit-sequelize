@@ -14,7 +14,8 @@ export default function(sequelize, DataTypes) {
   );
   User.associate = function(models) {
     models.User.hasOne(models.UserProfile, {
-      foreignKey: 'user_id'
+      foreignKey: 'user_id',
+      hooks: true
     });
   };
   return User;

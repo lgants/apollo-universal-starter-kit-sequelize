@@ -5,20 +5,14 @@ export default function(sequelize, DataTypes) {
     'AuthGoogle',
     {
       google_id: { type: DataTypes.STRING, unique: true },
-      display_name: DataTypes.STRING,
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: sequelize.models.User,
-          key: 'id'
-          // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-      }
+      display_name: DataTypes.STRING
     },
     { timestamps: true, freezeTableName: true }
   );
-  AuthGoogle.associate = function() {
-    // associations can be defined here
+  AuthGoogle.associate = function(models) {
+    models.AuthGoogle.belongsTo(models.User, {
+      foreignKey: 'user_id'
+    });
   };
   return AuthGoogle;
 }
