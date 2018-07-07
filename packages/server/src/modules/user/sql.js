@@ -1,7 +1,7 @@
 // Helpers
 // import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
-import { camelizeKeys, decamelizeKeys } from 'humps';
-// import { has } from 'lodash';
+import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
+import { has } from 'lodash';
 import bcrypt from 'bcryptjs';
 // import models from '../../database/models';
 // import models from '../../database/models';
@@ -83,100 +83,106 @@ class User {
   // }
 
   // async getUsers(orderBy, filter) {
-  async getUsers() {
-    const queryBuilder = await models.User.findAll({
-      attributes: [
-        'id',
-        'username',
-        'role',
-        'is_active',
-        'email',
-        [Sequelize.col('UserProfile.first_name'), 'first_name'],
-        [Sequelize.col('UserProfile.first_name'), 'last_name'],
-        [Sequelize.col('AuthCertificate.serial'), 'serial'],
-        [Sequelize.col('AuthFacebook.fb_id'), 'fb_id'],
-        [Sequelize.col('AuthFacebook.display_name'), 'fbDisplayName'],
-        [Sequelize.col('AuthLinkedin.ln_id'), 'ln_id'],
-        [Sequelize.col('AuthLinkedin.display_name'), 'lnDisplayName'],
-        [Sequelize.col('AuthGithub.gh_id'), 'gh_id'],
-        [Sequelize.col('AuthGithub.display_name'), 'ghDisplayName'],
-        [Sequelize.col('AuthGoogle.google_id'), 'google_id'],
-        [Sequelize.col('AuthGoogle.display_name'), 'googleDisplayName']
-      ],
-      include: [
-        {
-          model: models.UserProfile,
-          required: false,
-          attributes: []
-        },
-        {
-          model: models.AuthCertificate,
-          required: false,
-          attributes: []
-        },
-        {
-          model: models.AuthFacebook,
-          required: false,
-          attributes: []
-        },
-        {
-          model: models.AuthLinkedin,
-          required: false,
-          attributes: []
-        },
-        {
-          model: models.AuthGithub,
-          required: false,
-          attributes: []
-        },
-        {
-          model: models.AuthGoogle,
-          required: false,
-          attributes: []
-        }
-      ],
-      raw: true
-    });
+  async getUsers(orderBy, filter) {
+    // query { where: { is_active: '' } }
+    // filter { searchText: '', role: '', isActive: true }
+    // orderBy { column: '', order: '' }
 
-    // TODO: continue implementing these methods
+    let queryCriteria = {};
 
     // add order by
-    // if (orderBy && orderBy.column) {
-    //   let column = orderBy.column;
-    //   let order = 'asc';
-    //   if (orderBy.order) {
-    //     order = orderBy.order;
-    //   }
-    //
-    //   queryBuilder.orderBy(decamelize(column), order);
-    // }
-    //
-    // // add filter conditions
-    // if (filter) {
-    //   if (has(filter, 'role') && filter.role !== '') {
-    //     queryBuilder.where(function() {
-    //       this.where('u.role', filter.role);
-    //     });
-    //   }
-    //
-    //   if (has(filter, 'isActive') && filter.isActive !== null) {
-    //     queryBuilder.where(function() {
-    //       this.where('u.is_active', filter.isActive);
-    //     });
-    //   }
-    //
-    //   if (has(filter, 'searchText') && filter.searchText !== '') {
-    //     queryBuilder.where(function() {
-    //       this.where('u.username', 'like', `%${filter.searchText}%`)
-    //         .orWhere('u.email', 'like', `%${filter.searchText}%`)
-    //         .orWhere('up.first_name', 'like', `%${filter.searchText}%`)
-    //         .orWhere('up.last_name', 'like', `%${filter.searchText}%`);
-    //     });
-    //   }
-    // }
-    //
-    // return camelizeKeys(await queryBuilder);
-    return queryBuilder;
+    if (orderBy && orderBy.column) {
+      let column = orderBy.column;
+      let order = 'ASC';
+
+      if (orderBy.order) {
+        order = orderBy.order;
+      }
+
+      queryCriteria.order = [([decamelize(column)]: order)];
+    }
+
+    // add filter conditions
+    if (filter) {
+      if (has(filter, 'role') && filter.role !== '') {
+        queryCriteria.where = { role: filter.role };
+      }
+
+      if (has(filter, 'isActive') && filter.isActive !== null) {
+        queryCriteria.where = { is_active: filter.isActive };
+      }
+
+      if (has(filter, 'searchText') && filter.searchText !== '') {
+        let fields = ['username', 'email', '$UserProfile.first_name$', '$UserProfile.last_name$'];
+
+        queryCriteria.where = {
+          [Op.or]: fields.map(field => {
+            return { [field]: { [Op.like]: `%${filter.searchText}%` } };
+          })
+        };
+      }
+    }
+
+    console.log('query', queryCriteria);
+    console.log('filter', filter);
+    console.log('orderBy', orderBy);
+
+    return camelizeKeys(
+      await models.User.findAll({
+        ...queryCriteria,
+        attributes: [
+          'id',
+          'username',
+          'role',
+          'is_active',
+          'email',
+          [Sequelize.col('UserProfile.first_name'), 'first_name'],
+          [Sequelize.col('UserProfile.first_name'), 'last_name'],
+          [Sequelize.col('AuthCertificate.serial'), 'serial'],
+          [Sequelize.col('AuthFacebook.fb_id'), 'fb_id'],
+          [Sequelize.col('AuthFacebook.display_name'), 'fbDisplayName'],
+          [Sequelize.col('AuthLinkedin.ln_id'), 'ln_id'],
+          [Sequelize.col('AuthLinkedin.display_name'), 'lnDisplayName'],
+          [Sequelize.col('AuthGithub.gh_id'), 'gh_id'],
+          [Sequelize.col('AuthGithub.display_name'), 'ghDisplayName'],
+          [Sequelize.col('AuthGoogle.google_id'), 'google_id'],
+          [Sequelize.col('AuthGoogle.display_name'), 'googleDisplayName']
+        ],
+        include: [
+          {
+            model: models.UserProfile,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthCertificate,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthFacebook,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthLinkedin,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthGithub,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthGoogle,
+            required: false,
+            attributes: []
+          }
+        ],
+        raw: true
+      })
+    );
   }
 
   // async getUser(id) {
