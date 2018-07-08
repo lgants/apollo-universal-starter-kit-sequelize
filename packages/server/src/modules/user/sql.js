@@ -441,7 +441,7 @@ class User {
   //     })
   //     .where({ id });
   // }
-  // NOTE: STOPPED HERE
+
   async editUser({ id, username, email, role, isActive, password }) {
     let localAuthInput = { email };
     if (password) {
@@ -475,7 +475,6 @@ class User {
   //     return returnId(knex('user_profile')).insert({ ...decamelizeKeys(profile), user_id: id });
   //   }
   // }
-
   async editUserProfile({ id, profile }) {
     const userProfile = await models.UserProfile.findOne({ attributes: ['id'], where: { user_id: id } });
 
@@ -513,7 +512,6 @@ class User {
   //     return returnId(knex('auth_certificate')).insert({ serial, user_id: id });
   //   }
   // }
-
   async editAuthCertificate({
     id,
     auth: {
@@ -537,11 +535,12 @@ class User {
   //     .where('id', '=', id)
   //     .del();
   // }
-
   async deleteUser(id) {
-    return await models.User.destroy({
+    let x = await models.User.destroy({
       where: { id }
     });
+    console.log('attempt to destroy');
+    return x;
   }
 
   // async updatePassword(id, newPassword) {

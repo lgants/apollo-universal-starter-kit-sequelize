@@ -182,13 +182,18 @@ export default pubsub => ({
       (obj, args, { User, user }) => {
         return user.id !== args.id ? ['user:delete'] : ['user:delete:self'];
       },
-      async (obj, { id }, { User, req: { t } }) => {
+      async (obj, { id }, context) => {
+        let {
+          User,
+          req: { t }
+        } = context;
+
         try {
           const e = new FieldError();
           const user = await User.getUser(id);
+
           if (!user) {
             e.setError('delete', t('user:userIsNotExisted'));
-
             e.throwIf();
           }
 
