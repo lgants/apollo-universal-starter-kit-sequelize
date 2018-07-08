@@ -182,20 +182,24 @@ export default pubsub => ({
       (obj, args, { User, user }) => {
         return user.id !== args.id ? ['user:delete'] : ['user:delete:self'];
       },
-      async (obj, { id }, { User, user, req: { t } }) => {
-        const isAdmin = () => user.role === 'admin';
-        const isSelf = () => user.id === id;
+      async (obj, { id }, context) => {
+        const {
+          User,
+          req: { t }
+        } = context;
+        const isAdmin = () => context.user.role === 'admin';
+        const isSelf = () => context.user.id === id;
 
         try {
           const e = new FieldError();
-          const userExists = await User.getUser(id);
+          const user = await User.getUser(id);
 
-          if (!userExists) {
-            e.setError('delete', t('user:userDoesNotExist'));
+          if (!user) {
+            e.setError('delete', t('user:userIsNotExisted'));
             e.throwIf();
           }
 
-          if (isSelf) {
+          if (isSelf()) {
             e.setError('delete', t('user:userCannotDeleteYourself'));
             e.throwIf();
           }

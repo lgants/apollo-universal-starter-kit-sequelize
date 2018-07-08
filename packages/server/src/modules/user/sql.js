@@ -117,10 +117,6 @@ class User {
       }
     }
 
-    console.log('query', queryCriteria);
-    console.log('filter', filter);
-    console.log('orderBy', orderBy);
-
     return camelizeKeys(
       await models.User.findAll({
         ...queryCriteria,
@@ -131,7 +127,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name'],
+          [Sequelize.col('UserProfile.last_name'), 'last_name'],
           [Sequelize.col('AuthCertificate.serial'), 'serial'],
           [Sequelize.col('AuthFacebook.fb_id'), 'fb_id'],
           [Sequelize.col('AuthFacebook.display_name'), 'fbDisplayName'],
@@ -222,7 +218,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name'],
+          [Sequelize.col('UserProfile.last_name'), 'last_name'],
           [Sequelize.col('AuthCertificate.serial'), 'serial'],
           [Sequelize.col('AuthFacebook.fb_id'), 'fb_id'],
           [Sequelize.col('AuthFacebook.display_name'), 'fbDisplayName'],
@@ -301,7 +297,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name']
+          [Sequelize.col('UserProfile.last_name'), 'last_name']
         ],
         include: [
           {
@@ -335,9 +331,9 @@ class User {
           'username',
           'role',
           'is_active',
-          [Sequelize.col('AuthCertificate.first_name'), 'serial'],
+          [Sequelize.col('AuthCertificate.serial'), 'serial'],
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name']
+          [Sequelize.col('UserProfile.last_name'), 'last_name']
         ],
         include: [
           {
@@ -536,11 +532,9 @@ class User {
   //     .del();
   // }
   async deleteUser(id) {
-    let x = await models.User.destroy({
+    return await models.User.destroy({
       where: { id }
     });
-    console.log('attempt to destroy');
-    return x;
   }
 
   // async updatePassword(id, newPassword) {
@@ -550,7 +544,6 @@ class User {
   //     .update({ password_hash: passwordHash })
   //     .where({ id });
   // }
-
   async updatePassword(id, newPassword) {
     const passwordHash = await bcrypt.hash(newPassword, 12);
 
@@ -562,7 +555,6 @@ class User {
   //     .update({ is_active: isActive })
   //     .where({ id });
   // }
-
   async updateActive(id, isActive) {
     return await models.User.update({ is_active: isActive }, { where: { id } });
   }
@@ -599,7 +591,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name']
+          [Sequelize.col('UserProfile.last_name'), 'last_name']
         ],
         include: [
           {
@@ -635,9 +627,38 @@ class User {
   //       .first()
   //   );
   // }
-
-  async getUserByFbIdOrEmail() {
-    return null;
+  async getUserByFbIdOrEmail(id, email) {
+    return camelizeKeys(
+      await models.User.findOne({
+        where: {
+          [Op.or]: [{ '$AuthFacebook.fb_id$': id }, { email }]
+        },
+        attributes: [
+          'id',
+          'username',
+          'password_hash',
+          'role',
+          'is_active',
+          'email',
+          [Sequelize.col('UserProfile.first_name'), 'first_name'],
+          [Sequelize.col('UserProfile.last_name'), 'last_name'],
+          [Sequelize.col('AuthFacebook.fb_id'), 'fb_id']
+        ],
+        include: [
+          {
+            model: models.UserProfile,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthFacebook,
+            required: false,
+            attributes: []
+          }
+        ],
+        raw: true
+      })
+    );
   }
 
   // async getUserByLnInIdOrEmail(id, email) {
@@ -662,6 +683,39 @@ class User {
   //       .first()
   //   );
   // }
+  async getUserByLnInIdOrEmail(id, email) {
+    return camelizeKeys(
+      await models.User.findOne({
+        where: {
+          [Op.or]: [{ '$AuthLinkedin.ln_id$': id }, { email }]
+        },
+        attributes: [
+          'id',
+          'username',
+          'password_hash',
+          'role',
+          'is_active',
+          'email',
+          [Sequelize.col('UserProfile.first_name'), 'first_name'],
+          [Sequelize.col('UserProfile.last_name'), 'last_name'],
+          [Sequelize.col('AuthLinkedin.ln_id'), 'ln_id']
+        ],
+        include: [
+          {
+            model: models.UserProfile,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthLinkedin,
+            required: false,
+            attributes: []
+          }
+        ],
+        raw: true
+      })
+    );
+  }
 
   // async getUserByGHIdOrEmail(id, email) {
   //   return camelizeKeys(
@@ -685,6 +739,39 @@ class User {
   //       .first()
   //   );
   // }
+  async getUserByGHIdOrEmail(id, email) {
+    return camelizeKeys(
+      await models.User.findOne({
+        where: {
+          [Op.or]: [{ '$AuthGithub.gh_id$': id }, { email }]
+        },
+        attributes: [
+          'id',
+          'username',
+          'password_hash',
+          'role',
+          'is_active',
+          'email',
+          [Sequelize.col('UserProfile.first_name'), 'first_name'],
+          [Sequelize.col('UserProfile.last_name'), 'last_name'],
+          [Sequelize.col('AuthGithub.gh_id'), 'gh_id']
+        ],
+        include: [
+          {
+            model: models.UserProfile,
+            required: false,
+            attributes: []
+          },
+          {
+            model: models.AuthGithub,
+            required: false,
+            attributes: []
+          }
+        ],
+        raw: true
+      })
+    );
+  }
 
   // async getUserByGoogleIdOrEmail(id, email) {
   //   return camelizeKeys(
@@ -712,7 +799,7 @@ class User {
     return camelizeKeys(
       await models.User.findOne({
         where: {
-          [Op.or]: [{ '$AuthCertificate.google_id$': id }, { email }]
+          [Op.or]: [{ '$AuthGoogle.google_id$': id }, { email }]
         },
         attributes: [
           'id',
@@ -722,7 +809,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name'],
+          [Sequelize.col('UserProfile.last_name'), 'last_name'],
           [Sequelize.col('AuthGoogle.google_id'), 'google_id']
         ],
         include: [
@@ -765,7 +852,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name']
+          [Sequelize.col('UserProfile.last_name'), 'last_name']
         ],
         include: [
           {
@@ -813,7 +900,7 @@ class User {
           'is_active',
           'email',
           [Sequelize.col('UserProfile.first_name'), 'first_name'],
-          [Sequelize.col('UserProfile.first_name'), 'last_name']
+          [Sequelize.col('UserProfile.last_name'), 'last_name']
         ],
         include: [
           {
