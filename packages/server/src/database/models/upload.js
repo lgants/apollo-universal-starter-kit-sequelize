@@ -6,7 +6,7 @@ export default function(sequelize, DataTypes) {
     {
       name: { type: DataTypes.STRING, allowNull: false },
       type: { type: DataTypes.STRING, allowNull: false },
-      size: { type: DataTypes.STRING, allowNull: false },
+      size: { type: DataTypes.INTEGER, allowNull: false },
       path: { type: DataTypes.STRING, allowNull: false }
     },
     { timestamps: true, freezeTableName: true }

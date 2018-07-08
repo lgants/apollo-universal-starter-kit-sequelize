@@ -3,19 +3,22 @@
 import models from '../../database/models';
 
 export default class Upload {
+  // files() {
+  //   return knex('upload').select('*');
+  // }
   async files() {
-    // return knex('upload').select('*');
     return await models.Upload.findAll();
   }
 
+  // async file(id) {
+  //   return knex('upload')
+  //     .select('*')
+  //     .where({ id })
+  //     .first();
+  // }
   async file(id) {
-    // return knex('upload')
-    //   .select('*')
-    //   .where({ id })
-    //   .first();
-
     return await models.Upload.findOne({
-      id
+      where: { id }
     });
   }
 
@@ -23,7 +26,7 @@ export default class Upload {
   //   return knex('upload').insert(files);
   // }
   async saveFiles(files) {
-    return await models.Upload.create(files);
+    return await models.Upload.bulkCreate(files);
   }
 
   // deleteFile(id) {

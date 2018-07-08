@@ -19,6 +19,7 @@ const storeFS = ({ stream, filename }) => {
 
   const id = shortid.generate();
   const path = `${UPLOAD_DIR}/${id}-${filename}`;
+
   return new Promise((resolve, reject) =>
     stream
       .on('error', error => {
