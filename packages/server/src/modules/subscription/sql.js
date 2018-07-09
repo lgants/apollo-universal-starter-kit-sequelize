@@ -1,7 +1,7 @@
 // Helpers
 import { camelizeKeys, decamelizeKeys } from 'humps';
 // import knex from '../../sql/connector';
-import { returnId } from '../../sql/helpers';
+// import { returnId } from '../../sql/helpers';
 import models from '../../database/models';
 
 // Actual query fetching and transformation in DB
@@ -17,8 +17,9 @@ export default class Subscription {
   // }
   async getSubscription(userId) {
     return camelizeKeys(
-      models.Subscription.findOne({
-        where: { user_id: userId }
+      await models.Subscription.findOne({
+        where: { user_id: userId },
+        raw: true
       })
     );
   }
@@ -34,8 +35,9 @@ export default class Subscription {
   // }
   async getSubscriptionByStripeSubscriptionId(stripeSubscriptionId) {
     return camelizeKeys(
-      models.Subscription.findOne({
-        where: { stripe_subscription_id: stripeSubscriptionId }
+      await models.Subscription.findOne({
+        where: { stripe_subscription_id: stripeSubscriptionId },
+        raw: true
       })
     );
   }
@@ -51,8 +53,9 @@ export default class Subscription {
   // }
   async getSubscriptionByStripeCustomerId(stripeCustomerId) {
     return camelizeKeys(
-      models.Subscription.findOne({
-        where: { stripe_customer_id: stripeCustomerId }
+      await models.Subscription.findOne({
+        where: { stripe_customer_id: stripeCustomerId },
+        raw: true
       })
     );
   }
@@ -71,17 +74,16 @@ export default class Subscription {
   //     return await returnId(knex('subscription')).insert({ ...decamelizeKeys(subscription), user_id: userId });
   //   }
   // }
-
   async editSubscription({ userId, subscription }) {
-    const userSubscription = models.Subscription.findOne({
+    const userSubscription = await models.Subscription.findOne({
       attributes: ['id'],
       where: { user_id: userId }
     });
 
     if (userSubscription) {
-      return await returnId(models.Subscription.update(decamelizeKeys(subscription), { where: { user_id: userId } }));
+      return await models.Subscription.update(decamelizeKeys(subscription), { where: { user_id: userId } });
     } else {
-      return await returnId(models.Subscription.create({ ...decamelizeKeys(subscription), user_id: userId }));
+      return await models.Subscription.create({ ...decamelizeKeys(subscription), user_id: userId });
     }
   }
 
@@ -96,7 +98,7 @@ export default class Subscription {
   // }
   async getCardInfo(userId) {
     return camelizeKeys(
-      models.Subscription.findOne({
+      await models.Subscription.findOne({
         attributes: ['expiry_month', 'expiry_year', 'last4', 'brand'],
         where: { user_id: userId }
       })
