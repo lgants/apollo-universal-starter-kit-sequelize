@@ -13,7 +13,7 @@ export default function(sequelize, DataTypes) {
       last4: DataTypes.STRING,
       brand: DataTypes.STRING
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true, underscored: true }
   );
   Subscription.associate = function(models) {
     models.Subscription.belongsTo(models.User, {

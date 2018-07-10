@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
       fb_id: { type: DataTypes.STRING, unique: true },
       display_name: DataTypes.STRING
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true, underscored: true }
   );
   AuthFacebook.associate = function(models) {
     models.AuthFacebook.belongsTo(models.User, {

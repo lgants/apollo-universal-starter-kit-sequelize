@@ -6,7 +6,7 @@ export default function(sequelize, DataTypes) {
     {
       serial: { type: DataTypes.STRING, unique: true }
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true, underscored: true }
   );
   AuthCertificate.associate = function(models) {
     models.AuthCertificate.belongsTo(models.User, {

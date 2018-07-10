@@ -10,7 +10,7 @@ export default function(sequelize, DataTypes) {
       role: { type: DataTypes.STRING, defaultValue: 'user' },
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true, underscored: true }
   );
   User.associate = function(models) {
     models.User.hasOne(models.AuthCertificate, {

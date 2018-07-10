@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
       google_id: { type: DataTypes.STRING, unique: true },
       display_name: DataTypes.STRING
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true, underscored: true }
   );
   AuthGoogle.associate = function(models) {
     models.AuthGoogle.belongsTo(models.User, {

@@ -6,6 +6,4 @@ const config = require('./sequelizedata');
 
 const env = process.env.NODE_ENV || 'development';
 
-console.log(config[env]);
-
 module.exports = config[env];

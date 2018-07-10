@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
       gh_id: { type: DataTypes.STRING, unique: true },
       display_name: DataTypes.STRING
     },
-    { timestamps: true, freezeTableName: true }
+    { timestamps: true, freezeTableName: true, underscored: true }
   );
   AuthGithub.associate = function(models) {
     models.AuthGithub.belongsTo(models.User, {
