@@ -7,6 +7,7 @@ import config from '../../../sequelize';
 
 const basename = path.basename(__filename);
 const db = {};
+
 let sequelize;
 
 if (config.use_env_variable) {
