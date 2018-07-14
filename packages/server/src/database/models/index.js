@@ -24,12 +24,9 @@ if (config.use_env_variable) {
   });
 }
 
-// NOTE: change dirname to __dirname with config in spinrc file
-const dirname = process.cwd();
-const modelsDir = path.join(dirname, './src/database/models');
+const modelsDir = path.join(process.cwd(), __dirname);
 
-fs
-  .readdirSync(modelsDir)
+fs.readdirSync(modelsDir)
   .filter(file => {
     return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js' && file !== 'index.js';
   })

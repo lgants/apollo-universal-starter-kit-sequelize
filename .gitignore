@@ -10,6 +10,7 @@ build
 *.log
 *.sqlite3
 *.sqlite
+*.npmrc
 .DS_Store
 jsconfig.json
 public

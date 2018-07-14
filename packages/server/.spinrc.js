@@ -26,6 +26,7 @@ const config = {
     reactHotLoader: false,
     persistGraphQL: false,
     frontendRefreshOnBackendChange: true,
+    webpackConfig: { node: { __dirname: true, __filename: false } },
     defines: {
       __DEV__: process.env.NODE_ENV !== 'production',
       __SERVER_PORT__: 8080,
