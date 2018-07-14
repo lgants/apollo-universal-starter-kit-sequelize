@@ -23,9 +23,9 @@ export const returnId = sequelizeTable => sequelizeTable.id;
 //   }
 // };
 
-export const truncateTables = async sequelize => {
-  Object.values(sequelize.models).map(model => {
-    return model.destroy({ truncate: true });
+export const truncateTables = sequelize => {
+  Object.values(sequelize.models).map(async model => {
+    return await model.destroy({ truncate: true });
   });
 };
 

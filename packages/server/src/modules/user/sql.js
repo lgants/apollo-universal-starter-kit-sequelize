@@ -1,5 +1,4 @@
 // Helpers
-// import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
 import { camelizeKeys, decamelizeKeys, decamelize } from 'humps';
 import { has } from 'lodash';
 import bcrypt from 'bcryptjs';
@@ -364,6 +363,7 @@ class User {
   async register({ username, email, password, role, isActive }) {
     const passwordHash = await bcrypt.hash(password, 12);
 
+    // TODO: fix - potential security vulnerability
     if (role === undefined) {
       role = 'user';
     }
